@@ -1,5 +1,7 @@
 package ie.gtludwig.pa.model;
 
+import ie.gtludwig.pa.model.generic.BasePojo;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

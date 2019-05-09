@@ -1,5 +1,6 @@
 package ie.gtludwig.pa.model;
 
+import ie.gtludwig.pa.model.generic.BasePojo;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

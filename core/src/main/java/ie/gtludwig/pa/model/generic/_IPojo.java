@@ -1,4 +1,4 @@
-package ie.gtludwig.pa.model;
+package ie.gtludwig.pa.model.generic;
 
 import java.io.Serializable;
 

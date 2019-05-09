@@ -10,7 +10,7 @@ import java.util.List;
 @Repository(value = "userJpaRepository")
 public interface UserJpaRepository extends JpaRepository<User, String> {
 
-	User findByUsername(String ssoId);
+	User findByUsername(String username);
 
 	User findByEmail(String email);
 

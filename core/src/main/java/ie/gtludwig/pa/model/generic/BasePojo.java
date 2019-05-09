@@ -1,4 +1,4 @@
-package ie.gtludwig.pa.model;
+package ie.gtludwig.pa.model.generic;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class BasePojo extends _IPojo {
+public class BasePojo implements _IPojo {
     	private static final long serialVersionUID = 1L;
 
     @Id
