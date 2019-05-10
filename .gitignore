@@ -2,3 +2,4 @@
 pa.iml
 core.iml
 engine.iml
+target/**
