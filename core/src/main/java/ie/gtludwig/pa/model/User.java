@@ -42,6 +42,9 @@ public class User extends BasePojo {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
+    @JoinTable(name = "pa_user2userProfile",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "userProfileId"))
     private Set<UserProfile> userProfileSet;
 
     public String getUsername() {

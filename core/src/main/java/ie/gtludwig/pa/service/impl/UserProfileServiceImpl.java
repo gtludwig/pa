@@ -31,10 +31,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userProfileJpaRepository.findByType(type);
     }
 
-    @Override
-    public List<UserProfile> findAllUserProfilesByUsername(String usename) {
-        return userProfileJpaRepository.findAllByUsername(usename);
-    }
+//    @Override
+//    public List<UserProfile> findAllUserProfilesByUsername(String usename) {
+//        return userProfileJpaRepository.findAllByUsername(usename);
+//    }
 
     @Override
     public List<UserProfile> findAllUserProfilesByUserId(String ssoId) {

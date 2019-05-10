@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments/login}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div class="fade" >
+
+        <div class="bg-white" >
+
+            <form th:action="@{/login}" method="post">
+                <div class="">
+                    <span style="text-transform: uppercase;" th:text="#{gen.signin}" />
+                </div>
+
+                <div class="">
+                    <input type="text" id="username" name="username" class="form-control" th:placeholder="#{gen.username}">
+                </div>
+
+                <div class="">
+                    <input type="password" id="password" name="password" class="form-control" th:placeholder="#{gen.password}">
+                </div>
+
+                <div class="" >
+                    <input type="submit" class="btn btn-primary btn-block" th:value="#{gen.signin}">
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#username').focus();
+	});
+</script>
+
+</body>
+</html>

@@ -161,11 +161,11 @@
             <version>${mysql.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.flywaydb</groupId>-->
+            <!--<artifactId>flyway-core</artifactId>-->
+            <!--<version>${flyway.version}</version>-->
+        <!--</dependency>-->
         <!--TEST DATABASE FOR TESTING PROCESSES AND RULES IN-MEMORY-->
         <dependency>
             <groupId>com.h2database</groupId>
