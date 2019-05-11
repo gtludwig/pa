@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://wwww.ultraq.net.nz/thymeleaf/layout">
-<head th:insert="fragments/common :: commonFragment">
-
+<head th:insert="~{fragments/common}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
     <title>Title</title>
 </head>
 
-<body>
+<body class="container container-fluid text-center">
     <div th:id="defaultFragment" th:fragment="defaultFragment">
         <div id="header" th:replace="fragments/header :: headerFragment"></div>
         <div class="main-container container-fluid">

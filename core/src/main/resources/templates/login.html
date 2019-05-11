@@ -6,38 +6,29 @@
 </head>
 <body>
 
-    <div class="fade" >
-
-        <div class="bg-white" >
-
-            <form th:action="@{/login}" method="post">
-                <div class="">
-                    <span style="text-transform: uppercase;" th:text="#{gen.signin}" />
-                </div>
-
-                <div class="">
-                    <input type="text" id="username" name="username" class="form-control" th:placeholder="#{gen.username}">
-                </div>
-
-                <div class="">
-                    <input type="password" id="password" name="password" class="form-control" th:placeholder="#{gen.password}">
-                </div>
-
-                <div class="" >
-                    <input type="submit" class="btn btn-primary btn-block" th:value="#{gen.signin}">
-                </div>
-            </form>
-
-        </div>
-
+<div class="container">
+    <div class=" text-center" >
+        <form class="form-signin" th:action="@{/login}" method="post">
+                <div class="h3 mb-3 font-weight-normal">
+                <span style="text-transform: uppercase;" th:text="#{gen.signin}" />
+            </div>
+            <div >
+                <label class="sr-only" th:text="#{gen.username}" />
+                <input type="text" id="username" name="username" class="form-control" th:placeholder="#{gen.username}" required autofocus>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{gen.password}" />
+                <input type="password" id="password" name="password" class="form-control" th:placeholder="#{gen.password}" required>
+            </div>
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            <input type="submit" class="btn btn-lg btn-primary btn-block" th:value="#{gen.signin}">
+        </form>
     </div>
-
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('#username').focus();
-	});
-</script>
+</div>
 
 </body>
 </html>
