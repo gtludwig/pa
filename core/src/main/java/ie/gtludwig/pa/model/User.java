@@ -21,12 +21,15 @@ public class User extends BasePojo {
 
     @NotEmpty
     @Column(name = "email", unique = true, nullable = false)
-    @Email
+    @Email(message="{errors.invalid_email}")
     private String email;
 
     @NotEmpty
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Transient
+    private String passwordConfirm;
 
     @NotEmpty
     @Column(name = "firstName", nullable = false)
@@ -69,6 +72,14 @@ public class User extends BasePojo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     public String getFirstName() {

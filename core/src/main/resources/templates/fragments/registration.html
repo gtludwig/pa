@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div class="container">
+        <form role="form" action="#" th:action="@{/registration}" th:object="${userForm}" class="form-signin" method="post">
+            <h2 class="form-signin-heading">Create your account</h2>
+            <input type="text" id>
+        </form>
+
+    </div>
+
+</body>
+</html>

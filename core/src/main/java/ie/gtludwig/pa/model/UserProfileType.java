@@ -2,9 +2,9 @@ package ie.gtludwig.pa.model;
 
 public enum UserProfileType {
 
-    USER("User"),
-    ADMIN("Admin"),
-    SPECIALIST("Specialist");
+    USER("USER"),
+    ADMIN("ADMIN"),
+    SPECIALIST("SPECIALIST");
 
     String type;
 

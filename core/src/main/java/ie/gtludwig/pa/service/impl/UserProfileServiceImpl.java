@@ -16,7 +16,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     private static Logger logger = LoggerFactory.getLogger(UserProfileServiceImpl.class);
 
     @Autowired
-    UserProfileJpaRepository userProfileJpaRepository;
+    private UserProfileJpaRepository userProfileJpaRepository;
 
 //    @Autowired
 //    UserService userService;
