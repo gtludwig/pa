@@ -49,10 +49,10 @@ public class Project  extends BasePojo {
     @JoinColumn(name = "guidelineId", referencedColumnName = "id")
     private Guideline guideline;
 
-    @OneToMany(mappedBy = "axis")
+    @OneToMany(mappedBy = "project")
     private Set<Axis> axisSet;
 
-    @OneToMany(mappedBy = "analysis")
+    @OneToMany(mappedBy = "project")
     private Set<Analysis> analysisSet;
 
     public User getCreator() {

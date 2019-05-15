@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ProjectService extends CrudService<Project> {
 
+    void updateProject(Project project);
+
     List<Project> findAllByCreator(User creator);
 
 }

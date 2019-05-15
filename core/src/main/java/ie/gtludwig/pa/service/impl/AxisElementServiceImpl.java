@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service(value = "axisElementService")
 public class AxisElementServiceImpl implements AxisElementService {
@@ -22,6 +24,21 @@ public class AxisElementServiceImpl implements AxisElementService {
     @Override
     public List<AxisElement> findAllByAxis(Axis axis) {
         return axisElementJpaRepository.findAllByAxis(axis);
+    }
+
+    @Override
+    public void createDefaulAxisElementSetFromAxis(Axis axis) {
+        Set<AxisElement> axisElementSet = new HashSet<>();
+
+        // Create AxisElement 1
+        AxisElement axisElement1 = new AxisElement();
+        axisElement1.setOrder(1);
+        axisElement1.setDescription("Default axis element 1 for axis: " + axis.getDescription());
+        axisElement1.setAxis(axis);
+
+        save(axisElement1);
+
+        axisElementSet.add(axisElement1);
     }
 
     @Override

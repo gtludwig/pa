@@ -1,8 +1,12 @@
 package ie.gtludwig.pa.service.impl;
 
 import ie.gtludwig.pa.dao.ProjectJpaRepository;
+import ie.gtludwig.pa.model.Axis;
+import ie.gtludwig.pa.model.Guideline;
 import ie.gtludwig.pa.model.Project;
 import ie.gtludwig.pa.model.User;
+import ie.gtludwig.pa.service.AxisService;
+import ie.gtludwig.pa.service.GuidelineService;
 import ie.gtludwig.pa.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +23,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectJpaRepository projectJpaRepository;
 
+    @Autowired
+    private GuidelineService guidelineService;
+
+    @Autowired
+    private AxisService axisService;
+
     @Override
     public List<Project> findAllByCreator(User creator) {
         return projectJpaRepository.findAllByCreator(creator);
@@ -33,6 +43,24 @@ public class ProjectServiceImpl implements ProjectService {
     public void save(Project pojo) {
         logger.info("Saved project with name: " + pojo.getName());
         projectJpaRepository.save(pojo);
+
+        createDefaultGuidelineFromProject(pojo);
+        createDefaultAxisFromProject(pojo);
+    }
+
+    @Override
+    public void updateProject(Project project)  {
+        projectJpaRepository.save(project);
+    }
+
+
+    protected void createDefaultGuidelineFromProject(Project project) {
+        Guideline guideline = new Guideline("Project " + project.getDescription() + " default guideline", project);
+        guidelineService.save(guideline);
+    }
+
+    protected void createDefaultAxisFromProject(Project project) {
+        axisService.createDefaultAxisSetFromProject(project);
     }
 
     @Override

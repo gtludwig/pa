@@ -96,7 +96,7 @@ public class UserController {
         return "welcome";
     }
 
-    @RequestMapping(value = "/user/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public void listUsers(ModelMap model, RedirectAttributes redirectAttributes) {
         model.addAttribute("user", getPrincipal());
         model.addAttribute("userList", userService.findAll());
@@ -123,17 +123,16 @@ public class UserController {
         try {
             userService.save(user);
             lastAction = buildLastAction(new String[] {"user.createSuccess", user.getUsername()});
-            logger.info(lastAction);
         } catch (Exception e) {
-            logger.info(lastAction);
             logger.error(e.getLocalizedMessage());
         }
+        logger.info(lastAction);
         redirectAttributes.addFlashAttribute("lastAction", lastAction);
-        return "redirect:users";
+        return "redirect:list";
     }
 
     @RequestMapping(value = "user/edit", method = RequestMethod.GET)
-    public void editUser(ModelMap model, @RequestParam(value = "id", required = true) String id) {
+    public void editUser(ModelMap model, @RequestParam(value = "id") String id) {
         model.addAttribute("pojo", userService.findById(id));
         model.addAttribute("allProfiles", userService.findAllUserProfiles());
     }
@@ -151,28 +150,26 @@ public class UserController {
         try {
             userService.save(user);
             lastAction = buildLastAction(new String[] {"user.editSuccess", user.getUsername()});
-            logger.info(lastAction);
         } catch (Exception e) {
-            logger.info(lastAction);
             logger.error(e.getLocalizedMessage());
         }
+        logger.info(lastAction);
         redirectAttributes.addFlashAttribute("lastAction", lastAction);
-        return "redirect:users";
+        return "redirect:list";
     }
 
     @RequestMapping(value = "/user/remove", method = RequestMethod.GET)
-    public String remove(ModelMap model, @RequestParam(value = "id", required = true) String id, final RedirectAttributes redirectAttributes) {
+    public String remove(ModelMap model, @RequestParam(value = "id") String id, final RedirectAttributes redirectAttributes) {
         String user = userService.findById(id).toString();
         lastAction = buildLastAction(new String[] {"user.removeFail", ""});
         try {
             userService.remove(id);
             lastAction = buildLastAction(new String[] {"user.removeSuccess", user});
-            logger.info(lastAction);
         } catch (Exception e) {
-            logger.info(lastAction);
             logger.error(e.getLocalizedMessage());
         }
+        logger.info(lastAction);
         redirectAttributes.addFlashAttribute("lastAction", lastAction);
-        return "redirect:users";
+        return "redirect:list";
     }
 }

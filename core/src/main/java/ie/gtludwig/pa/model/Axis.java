@@ -16,12 +16,15 @@ public class Axis extends AxisPojo {
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
+    @NotEmpty
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
 
-    @OneToMany(mappedBy = "axisElement")
-    private Set<AxisElement> axisElementSetElementSet;
+    @OneToMany(mappedBy = "axis")
+    private Set<AxisElement> axisElementSet;
+
+
 
     public boolean isActive() {
         return active;
@@ -39,11 +42,11 @@ public class Axis extends AxisPojo {
         this.project = project;
     }
 
-    public Set<AxisElement> getAxisElementSetElementSet() {
-        return axisElementSetElementSet;
+    public Set<AxisElement> getAxisElementSet() {
+        return axisElementSet;
     }
 
-    public void setAxisElementSetElementSet(Set<AxisElement> axisElementSetElementSet) {
-        this.axisElementSetElementSet = axisElementSetElementSet;
+    public void setAxisElementSet(Set<AxisElement> axisElementSet) {
+        this.axisElementSet = axisElementSet;
     }
 }

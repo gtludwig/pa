@@ -9,4 +9,7 @@ import java.util.List;
 public interface AxisElementService extends CrudService<AxisElement> {
 
     List<AxisElement> findAllByAxis(Axis axis);
+
+    void createDefaulAxisElementSetFromAxis(Axis axis) ;
+
 }

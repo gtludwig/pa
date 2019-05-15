@@ -16,11 +16,17 @@ public class Guideline extends AxisPojo {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "project")
+    @NotEmpty
+    @OneToOne(mappedBy = "guideline")
     private Project project;
 
-    @OneToMany(mappedBy = "guidelineElement")
+    @OneToMany(mappedBy = "guideline")
     private Set<GuidelineElement> guidelineElementSet;
+
+    public Guideline(@NotEmpty String name, @NotEmpty Project project) {
+        this.name = name;
+        this.project = project;
+    }
 
     public String getName() {
         return name;
