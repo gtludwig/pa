@@ -3,6 +3,8 @@ package ie.gtludwig.pa.service.impl;
 
 import ie.gtludwig.pa.dao.UserJpaRepository;
 import ie.gtludwig.pa.model.User;
+import ie.gtludwig.pa.model.UserProfile;
+import ie.gtludwig.pa.service.UserProfileService;
 import ie.gtludwig.pa.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
+    private UserProfileService userProfileService;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -34,6 +39,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserProfile> findAllUserProfiles() { return userProfileService.findAll(); }
+
+    @Override
     public User findById(String id) {
         return userJpaRepository.getOne(id);
     }
@@ -42,9 +50,7 @@ public class UserServiceImpl implements UserService {
     public void save(User pojo) {
         logger.info("Saved user with username: " + pojo.getUsername());
         pojo.setPassword(bCryptPasswordEncoder.encode(pojo.getPassword()));
-        System.out.println(pojo.getPassword());
         userJpaRepository.save(pojo);
-
     }
 
     @Override

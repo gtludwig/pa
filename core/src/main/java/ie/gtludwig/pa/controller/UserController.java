@@ -4,14 +4,23 @@ import ie.gtludwig.pa.config.UserValidator;
 import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.service.SecurityService;
 import ie.gtludwig.pa.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.util.Locale;
 
 @Controller
 public class UserController {
@@ -24,6 +33,14 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+
+    @Autowired
+    private ApplicationContext context;
+
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    private String lastAction;
+
 
     @GetMapping(value = "/registration")
     public String registration(Model model) {
@@ -58,8 +75,104 @@ public class UserController {
         return "login";
     }
 
+    private String getPrincipal(){
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails)principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
+    }
+
+    private String buildLastAction(String[] params) {
+        return context.getMessage(params[0], new Object[] {params[1]}, Locale.US);
+    }
+
     @RequestMapping(value = "/welcome", method = RequestMethod.GET)
     public String welcome(Model model) {
         return "welcome";
+    }
+
+    @RequestMapping(value = "/user/users", method = RequestMethod.GET)
+    public void listUsers(ModelMap model, RedirectAttributes redirectAttributes) {
+        model.addAttribute("user", getPrincipal());
+        model.addAttribute("userList", userService.findAll());
+    }
+
+    @RequestMapping(value = "/user/create", method = RequestMethod.GET)
+    public void createUser(ModelMap model) {
+        model.addAttribute("pojo", new User());
+        model.addAttribute("allProfiles", userService.findAllUserProfiles());
+
+    }
+
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
+    public String createUser(ModelMap model, @Valid @ModelAttribute(value = "pojo") User user, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            model.addAttribute("pojo", user);
+            return "/user/create";
+        }
+        lastAction = buildLastAction(new String[] {"user.createFail", ""});
+
+        try {
+            userService.save(user);
+            lastAction = buildLastAction(new String[] {"user.createSuccess", user.getUsername()});
+            logger.info(lastAction);
+        } catch (Exception e) {
+            logger.info(lastAction);
+            logger.error(e.getLocalizedMessage());
+        }
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:users";
+    }
+
+    @RequestMapping(value = "user/edit", method = RequestMethod.GET)
+    public void editUser(ModelMap model, @RequestParam(value = "id", required = true) String id) {
+        model.addAttribute("pojo", userService.findById(id));
+        model.addAttribute("allProfiles", userService.findAllUserProfiles());
+    }
+
+    @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
+    public String editUser(ModelMap model, @Valid @ModelAttribute(value = "pojo") User user, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
+                if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            model.addAttribute("pojo", user);
+            return "/user/edit?id=" + user.getId();
+        }
+        lastAction = buildLastAction(new String[] {"user.editFail", ""});
+        try {
+            userService.save(user);
+            lastAction = buildLastAction(new String[] {"user.editSuccess", user.getUsername()});
+            logger.info(lastAction);
+        } catch (Exception e) {
+            logger.info(lastAction);
+            logger.error(e.getLocalizedMessage());
+        }
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:users";
+    }
+
+    @RequestMapping(value = "/user/remove", method = RequestMethod.GET)
+    public String remove(ModelMap model, @RequestParam(value = "id", required = true) String id, final RedirectAttributes redirectAttributes) {
+        String user = userService.findById(id).toString();
+        lastAction = buildLastAction(new String[] {"user.removeFail", ""});
+        try {
+            userService.remove(id);
+            lastAction = buildLastAction(new String[] {"user.removeSuccess", user});
+            logger.info(lastAction);
+        } catch (Exception e) {
+            logger.info(lastAction);
+            logger.error(e.getLocalizedMessage());
+        }
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:users";
     }
 }
