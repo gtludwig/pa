@@ -4,6 +4,7 @@ package ie.gtludwig.pa.service.impl;
 import ie.gtludwig.pa.dao.UserJpaRepository;
 import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.model.UserProfile;
+import ie.gtludwig.pa.model.UserProfileType;
 import ie.gtludwig.pa.service.UserProfileService;
 import ie.gtludwig.pa.service.UserService;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "userService")
@@ -40,6 +42,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserProfile> findAllUserProfiles() { return userProfileService.findAll(); }
+
+    @Override
+    public List<User> findAllByUserProfileType(UserProfileType userProfileType) {
+        List<User> userProfileTypeList = new ArrayList<>();
+        for (User user : userJpaRepository.findAll()) {
+            for (UserProfile userProfile : user.getUserProfileSet()) {
+                if (userProfile.getType().equalsIgnoreCase(userProfileType.getUserProfileType())) {
+                    userProfileTypeList.add(user);
+                }
+            }
+        }
+        return userProfileTypeList;
+    }
 
     @Override
     public User findById(String id) {

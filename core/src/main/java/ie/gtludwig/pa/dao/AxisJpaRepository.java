@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface AxisJpaRepository extends JpaRepository<Axis, String> {
 
-    List<Axis> findAllByProject(Project project);
+//    List<Axis> findAllByProject(Project project);
+
+    Axis findByDescription(String description);
 }

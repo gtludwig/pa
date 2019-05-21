@@ -10,6 +10,12 @@
 <div layout:fragment="content">
     <div class="container">
         Welcome!
+        <a th:href="@{/project/list}">
+            <button class="btn" th:text="#{project.list}" >listProjects</button>
+        </a>
+        <a th:href="@{/project/guideline/list}">
+            <button class="btn" th:text="#{guideline.list}" >listProjects</button>
+        </a>
     </div>
 </div>
 </body>

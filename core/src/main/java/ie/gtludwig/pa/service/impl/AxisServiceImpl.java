@@ -3,8 +3,9 @@ package ie.gtludwig.pa.service.impl;
 import ie.gtludwig.pa.dao.AxisJpaRepository;
 import ie.gtludwig.pa.model.Axis;
 import ie.gtludwig.pa.model.Project;
-import ie.gtludwig.pa.service.AxisElementService;
+import ie.gtludwig.pa.model.Rule;
 import ie.gtludwig.pa.service.AxisService;
+import ie.gtludwig.pa.service.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,61 +18,41 @@ import java.util.Set;
 @Service(value = "axisService")
 public class AxisServiceImpl implements AxisService {
 
-    private static Logger logger = LoggerFactory.getLogger(AnalysisServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(AxisServiceImpl.class);
 
     @Autowired
     private AxisJpaRepository axisJpaRepository;
 
     @Autowired
-    private AxisElementService axisElementService;
+    private RuleService ruleService;
 
     @Override
-    public List<Axis> findAllByProject(Project project) {
-        return axisJpaRepository.findAllByProject(project);
+    public Axis findByDescription(String description) {
+        return axisJpaRepository.findByDescription(description);
+    }
+
+    @Override
+    public Set<Axis> getDefaultAxisSet() {
+        Set<Axis> axisSet = new HashSet<>();
+        axisSet.add(findByDescription("Default Axis 0"));
+        axisSet.add(findByDescription("Default Axis 1"));
+        axisSet.add(findByDescription("Default Axis 2"));
+        return axisSet;
     }
 
     @Override
     public Set<Axis> createDefaultAxisSetFromProject(Project project) {
         Set<Axis> axisSet = new HashSet<>();
 
-        // Create Axis 1
-        Axis axis1 = new Axis();
-        axis1.setOrder(1);
-        axis1.setDescription("Default axis 1 for project: " + project.getDescription());
-        axis1.setActive(true);
-        axis1.setProject(project);
+        for (Axis axis : getDefaultAxisSet()) {
+            Axis newAxis = axis;
+            newAxis.setProject(project);
+            newAxis.setRuleSet(ruleService.createRuleSetForAxis(axis));
 
-        // Create Axis 2
-        Axis axis2 = new Axis();
-        axis2.setOrder(2);
-        axis2.setDescription("Default axis 2 for project: " + project.getDescription());
-        axis2.setActive(true);
-        axis2.setProject(project);
-
-        // Create Axis 3
-        Axis axis3 = new Axis();
-        axis3.setOrder(3);
-        axis3.setDescription("Default axis 3 for project: " + project.getDescription());
-        axis3.setActive(true);
-        axis3.setProject(project);
-
-        axisSet.add(axis1);
-        axisSet.add(axis2);
-        axisSet.add(axis3);
-
-        save(axis1);
-        save(axis2);
-        save(axis3);
-
-        createDefaulAxisElementSetFromAxis(axis1);
-        createDefaulAxisElementSetFromAxis(axis2);
-        createDefaulAxisElementSetFromAxis(axis3);
-
+            save(newAxis);
+            axisSet.add(newAxis);
+        }
         return axisSet;
-    }
-
-    protected void createDefaulAxisElementSetFromAxis(Axis axis) {
-        axisElementService.createDefaulAxisElementSetFromAxis(axis);
     }
 
     @Override
@@ -81,14 +62,14 @@ public class AxisServiceImpl implements AxisService {
 
     @Override
     public void save(Axis pojo) {
-        logger.info("Saved axis with description: {}", pojo.getDescription());
+        logger.info("Saved axis for project {} with description {}.", pojo.getProject().getName(), pojo.getDescription());
         axisJpaRepository.save(pojo);
     }
 
     @Override
     public void remove(String id) {
         Axis axis = axisJpaRepository.getOne(id);
-        logger.info("Removed axis with description: {}", axis.getDescription());
+        logger.info("Removed axis with id: {}", axis.getId());
         axisJpaRepository.delete(axis);
     }
 

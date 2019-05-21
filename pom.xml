@@ -31,6 +31,7 @@
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
+        <thylemeaf-extras.version>3.0.4.RELEASE</thylemeaf-extras.version>
         <thymeleaf-layout-dialect.version>2.3.0</thymeleaf-layout-dialect.version>
         <flyway.version>5.2.0</flyway.version>
         <mysql.version>8.0.16</mysql.version>
@@ -86,7 +87,12 @@
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-            <version>3.0.4.RELEASE</version>
+            <version>${thylemeaf-extras.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <version>${thylemeaf-extras.version}</version>
         </dependency>
 
         <!--SECURITY-->
@@ -145,11 +151,11 @@
             <version>${mysql.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.flywaydb</groupId>-->
-            <!--<artifactId>flyway-core</artifactId>-->
-            <!--<version>${flyway.version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
         <!--TEST DATABASE FOR TESTING PROCESSES AND RULES IN-MEMORY-->
         <dependency>
             <groupId>com.h2database</groupId>

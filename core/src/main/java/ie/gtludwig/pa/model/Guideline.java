@@ -1,6 +1,8 @@
 package ie.gtludwig.pa.model;
 
-import ie.gtludwig.pa.model.generic.AxisPojo;
+import ie.gtludwig.pa.model.generic.BasePojo;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -8,24 +10,58 @@ import java.util.Set;
 
 @Entity
 @Table(name = "pa_guideline")
-public class Guideline extends AxisPojo {
+public class Guideline extends BasePojo {
 
     private static final Long serialVersionUID = 1L;
+
+    @Column(name = "ordering", nullable = false)
+    private int ordering = 0;
+
+    @NotEmpty
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @NotEmpty
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotEmpty
-    @OneToOne(mappedBy = "guideline")
-    private Project project;
+//    @NotEmpty
+//    @OneToOne(mappedBy = "guideline")
+//    private Project project;
 
-    @OneToMany(mappedBy = "guideline")
-    private Set<GuidelineElement> guidelineElementSet;
+    @Transient
+    private int numberOfRules = 1;
 
-    public Guideline(@NotEmpty String name, @NotEmpty Project project) {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(name = "pa_guideline2rule",
+            joinColumns = @JoinColumn(name = "guidelineId"),
+            inverseJoinColumns = @JoinColumn(name = "ruleId"))
+    private Set<Rule> rulesSet;
+
+    public Guideline() {
+    }
+
+    public Guideline(int ordering, @NotEmpty String description, @NotEmpty String name) {
+        this.ordering = ordering;
+        this.description = description;
         this.name = name;
-        this.project = project;
+    }
+
+    public int getOrdering() {
+        return ordering;
+    }
+
+    public void setOrdering(int ordering) {
+        this.ordering = ordering;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getName() {
@@ -35,20 +71,28 @@ public class Guideline extends AxisPojo {
     public void setName(String name) {
         this.name = name;
     }
+//
+//    public Project getProject() {
+//        return project;
+//    }
+//
+//    public void setProject(Project project) {
+//        this.project = project;
+//    }
 
-    public Project getProject() {
-        return project;
+    public int getNumberOfRules() {
+        return numberOfRules;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setNumberOfRules(int numberOfRules) {
+        this.numberOfRules = numberOfRules;
     }
 
-    public Set<GuidelineElement> getGuidelineElementSet() {
-        return guidelineElementSet;
+    public Set<Rule> getRulesSet() {
+        return rulesSet;
     }
 
-    public void setGuidelineElementSet(Set<GuidelineElement> guidelineElementSet) {
-        this.guidelineElementSet = guidelineElementSet;
+    public void setRulesSet(Set<Rule> ruleSet) {
+        this.rulesSet = rulesSet;
     }
 }

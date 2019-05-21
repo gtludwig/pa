@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://wwww.ultraq.net.nz/thymeleaf/layout">
-<head th:include="~{fragments/common:: common}"></head>
+<head th:insert="~{fragments/common:: common}"></head>
 
 <body>
 
-<div class="container">
+<div th:fragment="default">
     <div th:replace="~{fragments/header :: header}"></div>
-    <div id="sidebar-and-content" class="container">
-        <div th:replace="~{fragments/sidebar :: sidebar}" ></div>
+    <div id="sidebar-and-content" class="container-fluid">
+<!--        <div class="col-md-4 col-lg-4 col-xl-4" >-->
+<!--            <div class="side" th:replace="~{fragments/sidebar :: sidebar}" ></div>-->
+<!--        </div>-->
         <div layout:fragment="content"></div>
     </div>
 </div>

@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // @formatter:off
         http.csrf().disable().authorizeRequests()
-                .antMatchers( "/css/**", "/js/**", "/images/**", "/webjars/**", "/**/favicon.ico").permitAll()
+                .antMatchers( "/css/**", "/js/**", "/images/**", "/fonts/**", "/webjars/**", "/i18n/**", "/**/favicon.ico").permitAll()
                 .antMatchers( "/registration", "/").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -56,9 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-//                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/welcome", true)
-//                .successForwardUrl("/welcome")
+                .failureForwardUrl("/login")
                 .permitAll()
                 .failureHandler(authenticationFailureHandler())
                 .and()

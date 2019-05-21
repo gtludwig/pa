@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface GuidelineJpaRepository extends JpaRepository<Guideline, String> {
 
-    List<Guideline> findAllByProject(Project project);
+    Guideline findByDescription(String description);
+
+//    List<Guideline> findAllByProject(Project project);
 }

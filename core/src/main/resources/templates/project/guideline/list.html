@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <section class="forms">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{guideline.guidelinesView}">guidelinesView</span></h4>
+                        </div>
+                    </div>
+                    <th:block th:if="${lastAction != null}" >
+                        <div th:replace="~{fragments/message :: message}" />
+                    </th:block>
+
+                    <div class="card-body">
+                        <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
+                            <a th:href="@{/project/guideline/create}">
+                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{gen.create}">create</button>
+                            </a>
+                        </th:block>
+
+                        <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                            <table id="projectTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                                <thead>
+                                    <tr>
+<!--                                        <th th:text="#{guideline.ordering}"></th>-->
+                                        <th th:text="#{guideline.name}"></th>
+                                        <th th:text="#{guideline.description}"></th>
+                                        <th th:text="#{guideline.numberOfRules}"></th>
+                                        <th th:text="#{gen.actions}"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${pojoList.empty}">
+                                    <td colspan="4" th:text="#{gen.noItems}">No Guidelines</td>
+                                </tr>
+                                <tr th:each="pojo : ${pojoList}">
+<!--                                    <td th:text="#{pojo.ordering}" />-->
+                                    <td th:text="${pojo.name}" />
+                                    <td th:text="${pojo.description}" />
+                                    <td th:text="${pojo.rulesSet.size()}" />
+                                    <td>
+                                        <a th:href="@{/project/guideline/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                        <a th:href="@{/project/guideline/remove(id=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

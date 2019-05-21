@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface ProjectJpaRepository extends JpaRepository<Project, String> {
 
+    Project findByName(String name);
+
     List<Project> findAllByCreator(User creator);
 }

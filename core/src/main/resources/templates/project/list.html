@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" >
+    <section class="forms">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{project.projectsView}">projectsView</span></h4>
+                        </div>
+                    </div>
+                    <th:block th:if="${lastAction != null}" >
+                        <div th:replace="~{fragments/message :: message}" />
+                    </th:block>
+
+                    <div class="card-body">
+                        <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
+                            <a th:href="@{/project/create}">
+                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{gen.create}">create</button>
+                            </a>
+                        </th:block>
+                        <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                            <table id="projectTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                                <thead>
+                                <tr>
+                                    <th th:text="#{project.sponsor}">sponsor</th>
+                                    <th th:text="#{project.creationDate}">creationDate</th>
+                                    <th th:text="#{project.evaluationStart}">evaluationStart</th>
+                                    <th th:text="#{project.evaluationEnd}">evaluationEnd</th>
+                                    <th th:text="#{project.name}">name</th>
+                                    <th th:text="#{project.analysisCounter}">analysisCounter</th>
+                                    <th th:text="#{project.state}">state</th>
+                                    <th th:text="#{project.numberOfAxis}">numberOfAxis</th>
+                                    <th th:text="#{gen.actions}">actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${pojoList.empty}">
+                                    <td colspan="9" th:text="#{gen.noItems}">No projects</td>
+                                </tr>
+                                <tr th:each="pojo : ${pojoList}">
+                                    <td th:text="${pojo.sponsor.username}" />
+                                    <td th:text="${pojo.creationDate}" />
+                                    <td th:text="${pojo.evaluationStart}" />
+                                    <td th:text="${pojo.evaluationEnd}" />
+                                    <td th:text="${pojo.name}" />
+                                    <td th:text="${pojo.counter / pojo.ideal}" />
+                                    <td th:text="#{${pojo.state}}" />
+                                    <td th:text="${pojo.axisSet.size()}" />
+                                    <td>
+                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />
+                                        <a th:href="@{/}" th:text="#{project.accessAxes}" />
+                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />
+
+                                        <a th:href="@{/project/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                        <a th:href="@{/project/remove(id=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>

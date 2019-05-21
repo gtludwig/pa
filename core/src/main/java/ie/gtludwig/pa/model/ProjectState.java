@@ -2,16 +2,16 @@ package ie.gtludwig.pa.model;
 
 public enum ProjectState {
 
-    DRAFT("state.draft"),
-    OPENED("state.opened"),
-    UNDER_ANALYSIS("state.under_analysis"),
-    REJECTED("state.rejected"),
-    APPROVED("state.success"),
-    CLOSED("state.closed");
+    DRAFT("project.state-draft"),
+    OPEN("project.state-open"),
+    UNDER_ANALYSIS("project.state-under_analysis"),
+    REJECTED("project.state-rejected"),
+    APPROVED("project.state-approved"),
+    CLOSED("project.state-closed");
 
     private String state;
 
-    private ProjectState(final String state) {this.state = state;}
+    ProjectState(final String state) {this.state = state;}
 
     public String getState() { return this.state; }
 

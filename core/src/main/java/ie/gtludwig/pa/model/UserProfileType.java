@@ -3,12 +3,13 @@ package ie.gtludwig.pa.model;
 public enum UserProfileType {
 
     USER("USER"),
-    ADMIN("ADMIN"),
-    SPECIALIST("SPECIALIST");
+    SPECIALIST("SPECIALIST"),
+    SPONSOR("SPONSOR"),
+    ADMIN("ADMIN");
 
     String type;
 
-    private UserProfileType(String userProfileType) {
+    UserProfileType(String userProfileType) {
         this.type = userProfileType;
     }
 

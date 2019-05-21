@@ -18,7 +18,7 @@ public class BasePojo implements _IPojo {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "id", unique = true, insertable = true)
+    @Column(name = "id", unique = true)
     private String id;
 
     public String getId() {

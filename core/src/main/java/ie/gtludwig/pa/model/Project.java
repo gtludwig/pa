@@ -3,8 +3,7 @@ package ie.gtludwig.pa.model;
 import ie.gtludwig.pa.model.generic.BasePojo;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -13,23 +12,23 @@ public class Project  extends BasePojo {
 
     private static final Long serialVersionUID = 1L;
 
-    @NotEmpty
-    @Column(name = "creator", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "creator")
     private User creator;
 
-    @NotEmpty
-    @Column(name = "creationDate", nullable = false)
-    private Date creationDate;
+    @ManyToOne
+    @JoinColumn(name = "sponsor")
+    private User sponsor;
 
-    @NotEmpty
+    @Column(name = "creationDate", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
+
     @Column(name = "evaluationStart", nullable = false)
-    private Date evaluationStart;
+    private LocalDateTime evaluationStart;
 
-    @NotEmpty
     @Column(name = "evaluationEnd", nullable = false)
-    private Date evaluationEnd;
+    private LocalDateTime evaluationEnd;
 
-    @NotEmpty
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -37,23 +36,40 @@ public class Project  extends BasePojo {
     private String description;
 
     @Column(name = "counter")
-    private int counter;
+    private int counter = 0;
 
     @Column(name = "ideal")
     private int ideal;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "state", nullable = false)
     private ProjectState state = ProjectState.DRAFT;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "guidelineId", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "guideline")
     private Guideline guideline;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<Axis> axisSet;
 
-    @OneToMany(mappedBy = "project")
-    private Set<Analysis> analysisSet;
+//    @OneToMany(mappedBy = "project")
+//    private Set<Analysis> analysisSet;
+
+
+    public Project() {
+    }
+
+    public Project(User creator, User sponsor, LocalDateTime creationDate, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int counter, int ideal, ProjectState state) {
+        this.creator = creator;
+        this.sponsor = sponsor;
+        this.creationDate = creationDate;
+        this.evaluationStart = evaluationStart;
+        this.evaluationEnd = evaluationEnd;
+        this.name = name;
+        this.description = description;
+        this.counter = counter;
+        this.ideal = ideal;
+        this.state = state;
+    }
 
     public User getCreator() {
         return creator;
@@ -63,27 +79,35 @@ public class Project  extends BasePojo {
         this.creator = creator;
     }
 
-    public Date getCreationDate() {
+    public User getSponsor() {
+        return sponsor;
+    }
+
+    public void setSponsor(User sponsor) {
+        this.sponsor = sponsor;
+    }
+
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getEvaluationStart() {
+    public LocalDateTime getEvaluationStart() {
         return evaluationStart;
     }
 
-    public void setEvaluationStart(Date evaluationStart) {
+    public void setEvaluationStart(LocalDateTime evaluationStart) {
         this.evaluationStart = evaluationStart;
     }
 
-    public Date getEvaluationEnd() {
+    public LocalDateTime getEvaluationEnd() {
         return evaluationEnd;
     }
 
-    public void setEvaluationEnd(Date evaluationEnd) {
+    public void setEvaluationEnd(LocalDateTime evaluationEnd) {
         this.evaluationEnd = evaluationEnd;
     }
 
@@ -142,12 +166,12 @@ public class Project  extends BasePojo {
     public void setAxisSet(Set<Axis> axisSet) {
         this.axisSet = axisSet;
     }
-
-    public Set<Analysis> getAnalysisSet() {
-        return analysisSet;
-    }
-
-    public void setAnalysisSet(Set<Analysis> analysisSet) {
-        this.analysisSet = analysisSet;
-    }
+//
+//    public Set<Analysis> getAnalysisSet() {
+//        return analysisSet;
+//    }
+//
+//    public void setAnalysisSet(Set<Analysis> analysisSet) {
+//        this.analysisSet = analysisSet;
+//    }
 }
