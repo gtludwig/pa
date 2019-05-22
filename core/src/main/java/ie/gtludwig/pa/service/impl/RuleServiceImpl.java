@@ -30,7 +30,7 @@ public class RuleServiceImpl implements RuleService {
     public Set<Rule> createRuleSetForAxis(Axis axis) {
         Set<Rule> rulesSet = new HashSet<>();
 
-        for (Rule rule : axis.getRuleSet()) {
+        for (Rule rule : axis.getRulesSet()) {
             rulesSet.add(ruleJpaRepository.saveAndFlush(new Rule(rule.getOrdering(), rule.getDescription())));
         }
 
@@ -44,7 +44,7 @@ public class RuleServiceImpl implements RuleService {
          String ruleDescription;
 
          for (int i = 0; i < 3; i++) {
-             ruleDescription = axis.getDescription() + i;
+             ruleDescription = axis.getDescription() + " " + i;
              if(findByDescription(ruleDescription) == null) {
                 rulesSet.add(ruleJpaRepository.saveAndFlush(new Rule(0, ruleDescription)));
              } else {

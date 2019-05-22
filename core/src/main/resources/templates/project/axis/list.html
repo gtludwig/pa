@@ -42,7 +42,7 @@
                                     <td th:text="${pojo.ordering}" />
                                     <td th:text="${pojo.description}" />
                                     <td th:text="#{${pojo.guideline} ? 'gen.true' : 'gen.false'}" />
-                                    <td th:text="${pojo.ruleSet.size()}" />
+                                    <td th:text="${pojo.rulesSet.size()}" />
                                     <td>
                                         <a th:href="@{/project/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
                                     </td>

@@ -36,35 +36,6 @@ public class AxisServiceImpl implements AxisService {
         return axisJpaRepository.findByDescription(description);
     }
 
-    protected Axis getDefaultAxis(int ordering, String axisDescription) {
-
-        Axis axis;
-
-        if (findByDescription(axisDescription) == null) {
-            axis = new Axis();
-            axis.setOrdering(ordering);
-            axis.setDescription(axisDescription);
-            axis.setGuideline(false);
-
-            axis = axisJpaRepository.saveAndFlush(axis);
-            axis.setRuleSet(ruleService.findDefaultRulesSetForAxis(axis));
-        } else {
-            axis = findByDescription(axisDescription);
-        }
-
-        return axis;
-    }
-
-    @Override
-    public Set<Axis> createDefaultAxisSetFromProject(Project project) {
-        Set<Axis> axisSet = new HashSet<>();
-
-        for (int i = 0; i < 3; i++) {
-            axisSet.add(getDefaultAxis(i, "Default Axis " + i));
-        }
-        return axisSet;
-    }
-
     @Override
     public Set<Axis> findAllByProjectId(String projectId) {
         Set<Axis> projectAxis = new HashSet<>();
@@ -76,24 +47,75 @@ public class AxisServiceImpl implements AxisService {
         return projectAxis;
     }
 
+    protected Axis getDefaultAxis(int ordering, String axisDescription) {
+
+        Axis axis = findByDescription(axisDescription);
+
+        if (axis == null) {
+            axis = new Axis();
+            axis.setOrdering(ordering);
+            axis.setDescription(axisDescription);
+            axis.setApplicationDefault(true);
+            axis.setGuideline(false);
+
+            axis = axisJpaRepository.saveAndFlush(axis);
+        }
+
+        return axis;
+    }
+
     @Override
-    public Axis findDefaultGuidelineAxis() {
+    public Set<Axis> createAxisSetForProject(Project project) {
+        Set<Axis> axisSet = new HashSet<>();
+
+        for (int i = 0; i < 3; i++) {
+            Axis defaultAxis = getDefaultAxis(i, "Default Axis " + i);
+
+            Axis projectAxis = new Axis();
+
+            projectAxis.setOrdering(defaultAxis.getOrdering());
+            projectAxis.setDescription("Project " + project.getName() + " :: Axis " + i);
+            projectAxis.setApplicationDefault(!defaultAxis.isApplicationDefault());
+            projectAxis.setGuideline(defaultAxis.isGuideline());
+
+            projectAxis = axisJpaRepository.saveAndFlush(projectAxis);
+            projectAxis.setRulesSet(ruleService.findDefaultRulesSetForAxis(projectAxis));
+
+            axisSet.add(projectAxis);
+        }
+        return axisSet;
+    }
+
+    protected Axis findDefaultGuidelineAxis() {
         String defaultGuidelineAxis = "Default Guideline Axis";
         Axis guidelineAxis = findByDescription(defaultGuidelineAxis);
         if(guidelineAxis == null) {
             guidelineAxis = new Axis();
             guidelineAxis.setOrdering(0);
             guidelineAxis.setDescription(defaultGuidelineAxis);
+            guidelineAxis.setApplicationDefault(true);
             guidelineAxis.setGuideline(true);
 
             guidelineAxis = axisJpaRepository.saveAndFlush(guidelineAxis);
-            guidelineAxis.setRuleSet(ruleService.findDefaultRulesSetForAxis(guidelineAxis));
-
-
-            return guidelineAxis;
         }
 
         return guidelineAxis;
+    }
+
+    @Override
+    public Axis createGuidelineAxisForProject(Project project) {
+        Axis defaultGuidelineAxis = findDefaultGuidelineAxis();
+
+        Axis projectGuidelineAxis = new Axis();
+        projectGuidelineAxis.setOrdering(defaultGuidelineAxis.getOrdering());
+        projectGuidelineAxis.setDescription("Guideline for project " + project.getName());
+        projectGuidelineAxis.setApplicationDefault(false);
+        projectGuidelineAxis.setGuideline(true);
+
+        projectGuidelineAxis = axisJpaRepository.saveAndFlush(projectGuidelineAxis);
+        projectGuidelineAxis.setRulesSet(ruleService.findDefaultRulesSetForAxis(projectGuidelineAxis));
+
+        return projectGuidelineAxis;
     }
 
     @Override
@@ -121,7 +143,7 @@ public class AxisServiceImpl implements AxisService {
 
     @Override
     public List<Axis> findAll() {
-        List<Axis> sorted = axisJpaRepository.findAll()
+        List<Axis> sorted = axisJpaRepository.findAllByApplicationDefaultIsFalse()
                 .stream()
                 .sorted(Comparator.comparingInt(Axis::getOrdering))
                 .sorted(Comparator.comparing(Axis::isGuideline).reversed())

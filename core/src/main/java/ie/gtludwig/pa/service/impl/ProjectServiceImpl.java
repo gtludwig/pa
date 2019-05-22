@@ -33,15 +33,15 @@ public class ProjectServiceImpl implements ProjectService {
         return projectJpaRepository.findAllByCreator(creator);
     }
 
-    @Override
-    public User findUserById(String id) {
-        return userService.findById(id);
-    }
-
-    @Override
-    public User findUserByUsername(String username) {
-        return userService.findByUsername(username);
-    }
+//    @Override
+//    public User findUserById(String id) {
+//        return userService.findById(id);
+//    }
+//
+//    @Override
+//    public User findUserByUsername(String username) {
+//        return userService.findByUsername(username);
+//    }
 
     @Override
     public User findUserByEmail(String email) {
@@ -70,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = findById(projectId);
 
         if (axisSet == null) {
-            project.setAxisSet(axisService.createDefaultAxisSetFromProject(project));
+            project.setAxisSet(axisService.createAxisSetForProject(project));
         }
 
         project.setSponsor(userService.findById(sponsorId));
@@ -108,10 +108,10 @@ public class ProjectServiceImpl implements ProjectService {
         return projectJpaRepository.saveAndFlush(project);
     }
 
-    @Override
-    public Axis findDefaultGuidelineAxis() {
-        return axisService.findDefaultGuidelineAxis();
-    }
+//    @Override
+//    public Axis findDefaultGuidelineAxis() {
+//        return axisService.findDefaultGuidelineAxis();
+//    }
 
     @Override
     public List<Axis> findAllAxis(boolean guideline) {
@@ -146,8 +146,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     protected void updateProjectAxis(Project project) {
-        Axis guideline = axisService.findDefaultGuidelineAxis();
-        Set<Axis> axisSet = axisService.createDefaultAxisSetFromProject(project);
+        Axis guideline = axisService.createGuidelineAxisForProject(project);
+        Set<Axis> axisSet = axisService.createAxisSetForProject(project);
 
         project.setGuidelineAxis(guideline);
         project.setAxisSet(axisSet);

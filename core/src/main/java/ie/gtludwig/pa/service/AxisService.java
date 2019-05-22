@@ -15,7 +15,9 @@ public interface AxisService extends CrudService<Axis> {
 
     Axis findByDescription(String description);
 
-    Set<Axis> createDefaultAxisSetFromProject(Project project);
+//    Axis findDefaultGuidelineAxis();
 
-    Axis findDefaultGuidelineAxis();
+    Axis createGuidelineAxisForProject(Project project);
+
+    Set<Axis> createAxisSetForProject(Project project);
 }

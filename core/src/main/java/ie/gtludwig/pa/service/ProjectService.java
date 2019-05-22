@@ -9,24 +9,16 @@ import java.util.Set;
 
 public interface ProjectService extends CrudService<Project> {
 
-
     Project findByName(String name);
 
     void createProject(String creatorId, String sponsorId, LocalDateTime creationLocalDateTime, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description);
 
-//    void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, String guidelineId, Set<Axis> axisSet);
     void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, Set<Axis> axisSet);
-
-    Axis findDefaultGuidelineAxis();
 
 //    List<Guideline> findAllGuidelines();
     List<Axis> findAllAxis(boolean guideline);
 
     List<Project> findAllByCreator(User creator);
-
-    User findUserById(String id);
-
-    User findUserByUsername(String username);
 
     User findUserByEmail(String email);
 

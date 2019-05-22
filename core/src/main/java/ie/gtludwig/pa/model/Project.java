@@ -1,6 +1,7 @@
 package ie.gtludwig.pa.model;
 
 import ie.gtludwig.pa.model.generic.BasePojo;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ManyToAny;
@@ -47,12 +48,11 @@ public class Project  extends BasePojo {
     @Column(name = "state", nullable = false)
     private ProjectState state = ProjectState.DRAFT;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "guidelineAxis")
     private Axis guidelineAxis;
 
-//    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "pa_project2axis",
             joinColumns = @JoinColumn(name = "projectId"),

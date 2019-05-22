@@ -12,5 +12,7 @@ public interface AxisJpaRepository extends JpaRepository<Axis, String> {
 
     List<Axis> findAllByGuideline(boolean guideline);
 
+    List<Axis> findAllByApplicationDefaultIsFalse();
+
     Axis findByDescription(String description);
 }
