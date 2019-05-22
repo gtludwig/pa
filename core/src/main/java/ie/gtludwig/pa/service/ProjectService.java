@@ -14,9 +14,13 @@ public interface ProjectService extends CrudService<Project> {
 
     void createProject(String creatorId, String sponsorId, LocalDateTime creationLocalDateTime, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description);
 
-    void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, String guidelineId, Set<Axis> axisSet);
+//    void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, String guidelineId, Set<Axis> axisSet);
+    void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, Set<Axis> axisSet);
 
-    List<Guideline> findAllGuidelines();
+    Axis findDefaultGuidelineAxis();
+
+//    List<Guideline> findAllGuidelines();
+    List<Axis> findAllAxis(boolean guideline);
 
     List<Project> findAllByCreator(User creator);
 

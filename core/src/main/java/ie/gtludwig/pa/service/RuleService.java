@@ -8,13 +8,13 @@ import java.util.Set;
 
 public interface RuleService extends CrudService<Rule> {
 
-    Rule findByDescription(String description);
-
     Set<Rule> createRuleSetForAxis(Axis axis);
+
+    Set<Rule> findDefaultRulesSetForAxis(Axis axis);
+
+    Rule findByDescription(String description);
 
     Set<Rule> createRulesSetForGuideline(String name, int numberOfRules);
 
     Set<Rule> updateRulesSetForGuideline_addRules(Set<Rule> rulesSet, String name, int numberOfRules);
-
-
 }

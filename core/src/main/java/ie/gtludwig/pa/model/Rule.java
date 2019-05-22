@@ -13,7 +13,6 @@ public class Rule extends BasePojo {
 
     private static final long serialVersionUID = 1L;
 
-//    @NotEmpty
     @Column(name = "ordering", nullable = false)
     private int ordering;
 

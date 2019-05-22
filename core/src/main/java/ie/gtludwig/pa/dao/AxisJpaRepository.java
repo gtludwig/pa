@@ -10,5 +10,7 @@ public interface AxisJpaRepository extends JpaRepository<Axis, String> {
 
 //    List<Axis> findAllByProject(Project project);
 
+    List<Axis> findAllByGuideline(boolean guideline);
+
     Axis findByDescription(String description);
 }

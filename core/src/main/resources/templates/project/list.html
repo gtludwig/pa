@@ -54,14 +54,14 @@
                                     <td th:text="${pojo.evaluationStart}" />
                                     <td th:text="${pojo.evaluationEnd}" />
                                     <td th:text="${pojo.name}" />
-                                    <td th:text="${pojo.counter / pojo.ideal}" />
+                                    <td th:text="${pojo.counter + ' / '  + pojo.ideal}" />
                                     <td th:text="#{${pojo.state}}" />
                                     <td th:text="${pojo.axisSet.size()}" />
                                     <td>
-                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />
-                                        <a th:href="@{/}" th:text="#{project.accessAxes}" />
-                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />
+<!--                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />-->
+<!--                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />-->
 
+                                        <a th:href="@{/project/axis/list/(${pojo.id})}" th:text="#{project.accessAxes}" />
                                         <a th:href="@{/project/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
                                         <a th:href="@{/project/remove(id=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />
                                     </td>

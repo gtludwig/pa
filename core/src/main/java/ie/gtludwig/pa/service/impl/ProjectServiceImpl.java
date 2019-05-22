@@ -3,7 +3,6 @@ package ie.gtludwig.pa.service.impl;
 import ie.gtludwig.pa.dao.ProjectJpaRepository;
 import ie.gtludwig.pa.model.*;
 import ie.gtludwig.pa.service.AxisService;
-import ie.gtludwig.pa.service.GuidelineService;
 import ie.gtludwig.pa.service.ProjectService;
 import ie.gtludwig.pa.service.UserService;
 import org.slf4j.Logger;
@@ -25,9 +24,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private GuidelineService guidelineService;
 
     @Autowired
     private AxisService axisService;
@@ -65,41 +61,61 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void save(Project pojo) {
         logger.info("Saved project with name: " + pojo.getName());
-        pojo.setGuideline(guidelineService.findByDescription("Default Guideline Description"));
 
         projectJpaRepository.save(pojo);
     }
 
     @Override
-    public void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, String guidelineId, Set<Axis> axisSet) {
+    public void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, Set<Axis> axisSet) {
         Project project = findById(projectId);
 
         if (axisSet == null) {
             project.setAxisSet(axisService.createDefaultAxisSetFromProject(project));
         }
 
+        project.setSponsor(userService.findById(sponsorId));
+        project.setEvaluationStart(evaluationStart);
+        project.setEvaluationEnd(evaluationEnd);
+        project.setName(name);
+        project.setDescription(description);
+        project.setIdeal(ideal);
+        project.setState(projectState);
+        project.setAxisSet(axisSet);
+
+        saveAndFlush(project);
+
+    }
+
+    protected Project saveAndFlush(Project project) {
+        boolean isNew = project.getId() == null ? true : false;
+
         try {
-            project.setSponsor(userService.findById(sponsorId));
-            project.setEvaluationStart(evaluationStart);
-            project.setEvaluationEnd(evaluationEnd);
-            project.setName(name);
-            project.setDescription(description);
-            project.setIdeal(ideal);
-            project.setState(projectState);
-            project.setGuideline(guidelineService.findById(guidelineId));
-            project.setAxisSet(axisSet);
+            project = projectJpaRepository.saveAndFlush(project);
 
-            save(project);
-            logger.info("Project with name <<{}>> successfully updated.", name.toUpperCase());
-
+            if (isNew) {
+                logger.info("Project with name <<{}>> successfully created.", project.getName());
+            } else {
+                logger.info("Project with name <<{}>> successfully updated.", project.getName());
+            }
         } catch (Exception e) {
-            logger.error("Unable to update project with name {}.", name);
+            if (isNew) {
+                logger.error("Unable to create project with name {}..", project.getName());
+            } else {
+                logger.info("Unable to update project with name {}.", project.getName());
+            }
         }
+
+        return projectJpaRepository.saveAndFlush(project);
     }
 
     @Override
-    public List<Guideline> findAllGuidelines() {
-        return guidelineService.findAll();
+    public Axis findDefaultGuidelineAxis() {
+        return axisService.findDefaultGuidelineAxis();
+    }
+
+    @Override
+    public List<Axis> findAllAxis(boolean guideline) {
+        return null;
     }
 
     @Override
@@ -110,14 +126,32 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void createProject(String creatorId, String sponsorId, LocalDateTime creationLocalDateTime, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description) {
 
-        try {
-            save(new Project(userService.findById(creatorId), userService.findById(sponsorId), creationLocalDateTime, evaluationStart, evaluationEnd, name, description, 0, 1, ProjectState.DRAFT));
-            logger.info("Project with name <<{}>> successfully created.", name.toUpperCase());
+        Project project = new Project();
+        project.setCreator(userService.findById(creatorId));
 
+        project.setSponsor(userService.findById(sponsorId));
+        project.setCreationDate(creationLocalDateTime);
+        project.setEvaluationStart(evaluationStart);
+        project.setEvaluationEnd(evaluationEnd);
+        project.setName(name);
+        project.setDescription(description);
+        project.setCounter(0);
+        project.setIdeal(1);
+        project.setState(ProjectState.DRAFT);
 
-        } catch (Exception e) {
-            logger.error("Unable to create project with name <<{}>>.", name);
-        }
+        project = saveAndFlush(project);
+
+        updateProjectAxis(project);
+
+    }
+
+    protected void updateProjectAxis(Project project) {
+        Axis guideline = axisService.findDefaultGuidelineAxis();
+        Set<Axis> axisSet = axisService.createDefaultAxisSetFromProject(project);
+
+        project.setGuidelineAxis(guideline);
+        project.setAxisSet(axisSet);
+        save(project);
     }
 
     @Override

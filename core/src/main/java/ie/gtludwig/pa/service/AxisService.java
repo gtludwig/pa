@@ -9,11 +9,13 @@ import java.util.Set;
 
 public interface AxisService extends CrudService<Axis> {
 
-//    List<Axis> findAllByProject(Project project);
+    Set<Axis> findAllByProjectId(String projectId);
+
+    List<Axis> findAll(boolean guideline);
 
     Axis findByDescription(String description);
 
-    Set<Axis> getDefaultAxisSet();
-
     Set<Axis> createDefaultAxisSetFromProject(Project project);
+
+    Axis findDefaultGuidelineAxis();
 }

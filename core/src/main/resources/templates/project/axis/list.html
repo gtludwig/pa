@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}">>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" >
+    <section class="forms">
+
+        <div class="row">
+            <div class="col-">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{axis.axisView}">axisView</span></h4>
+                        </div>
+                    </div>
+                    <th:block th:if="${lastAction != null}" >
+                        <div th:replace="~{fragments/message :: message}" />
+                    </th:block>
+
+                    <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                        <table id="axisTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                            <thead>
+                                <tr>
+                                    <th th:text="#{axis.ordering}" />
+                                    <th th:text="#{axis.description}" />
+                                    <th th:text="#{axis.guideline}" />
+                                    <th th:text="#{axis.numberOfRules}" />
+                                    <th th:text="#{gen.actions}" />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${pojoList.empty}" >
+                                    <td colspan="5" th:text="#{gen.noItems}">No Axis</td>
+                                </tr>
+                                <tr th:each="pojo : ${pojoList}">
+                                    <td th:text="${pojo.ordering}" />
+                                    <td th:text="${pojo.description}" />
+                                    <td th:text="#{${pojo.guideline} ? 'gen.true' : 'gen.false'}" />
+                                    <td th:text="${pojo.ruleSet.size()}" />
+                                    <td>
+                                        <a th:href="@{/project/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

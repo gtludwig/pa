@@ -15,19 +15,14 @@ public class Axis extends BasePojo {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "ordering", nullable = false)
-    private int ordering;
+    private int ordering = 0;
 
     @NotEmpty
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "active", nullable = false)
-    private boolean active = true;
-
-//    @NotEmpty
-    @ManyToOne
-    @JoinColumn(name = "projectId")
-    private Project project;
+    @Column(name = "guideline", nullable = false)
+    private boolean guideline = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -36,6 +31,15 @@ public class Axis extends BasePojo {
             inverseJoinColumns = @JoinColumn(name = "ruleId"))
     private Set<Rule> ruleSet;
 
+    public Axis() {
+    }
+
+    public Axis(int ordering, @NotEmpty String description, boolean guideline, Set<Rule> ruleSet) {
+        this.ordering = ordering;
+        this.description = description;
+        this.guideline = guideline;
+        this.ruleSet = ruleSet;
+    }
 
     public int getOrdering() {
         return ordering;
@@ -53,21 +57,14 @@ public class Axis extends BasePojo {
         this.description = description;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isGuideline() {
+        return guideline;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setGuideline(boolean guideline) {
+        this.guideline = guideline;
     }
 
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
 
     public Set<Rule> getRuleSet() {
         return ruleSet;

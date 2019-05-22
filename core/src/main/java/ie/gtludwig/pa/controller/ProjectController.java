@@ -1,6 +1,5 @@
 package ie.gtludwig.pa.controller;
 
-import ie.gtludwig.pa.model.Guideline;
 import ie.gtludwig.pa.model.Project;
 import ie.gtludwig.pa.service.ProjectService;
 import org.slf4j.Logger;
@@ -24,8 +23,10 @@ import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/project")
-//@SessionAttributes("pojo")
+@SessionAttributes("pojo")
 public class ProjectController {
+
+    private static Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
     private ProjectService projectService;
@@ -35,15 +36,12 @@ public class ProjectController {
 
     private String lastAction;
 
-    private static Logger logger = LoggerFactory.getLogger(ProjectController.class);
-
     private String buildLastAction(String[] params) {
         return context.getMessage(params[0], new Object[] {params[1]}, Locale.US);
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void listProjects(ModelMap modelMap, RedirectAttributes redirectAttributes) {
-//        modelMap.addAttribute("pojo", new Project());
         modelMap.addAttribute("pojoList", projectService.findAll());
     }
 
@@ -102,21 +100,22 @@ public class ProjectController {
 
         LocalDateTime creationLocalDateTime = LocalDateTime.now();
 
+
         Project pojo = new Project();
         pojo.setCreator(projectService.findUserByEmail(currentPrincipalName));
         pojo.setCreationDate(creationLocalDateTime);
         pojo.setEvaluationStart(creationLocalDateTime);
         pojo.setEvaluationEnd(creationLocalDateTime.plus(10, ChronoUnit.DAYS));
-        pojo.setGuideline(new Guideline());
 
         return pojo;
+
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public void editProject(ModelMap modelMap, @RequestParam(value = "id") String id) {
         modelMap.addAttribute("pojo", projectService.findById(id));
         modelMap.addAttribute("sponsors", projectService.findAllSponsorUsers());
-        modelMap.addAttribute("guidelines", projectService.findAllGuidelines());
+        modelMap.addAttribute("guidelines", projectService.findAllAxis(true));
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
@@ -141,7 +140,6 @@ public class ProjectController {
                     project.getDescription(),
                     project.getIdeal(),
                     project.getState(),
-                    project.getGuideline().getId(),
                     project.getAxisSet()
             );
 
@@ -156,11 +154,11 @@ public class ProjectController {
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     public String remove(ModelMap modelMap, @RequestParam(value = "id") String id, final RedirectAttributes redirectAttributes) {
-        String project = projectService.findById(id).toString();
-        lastAction = buildLastAction(new String[] {"project.removeFail", ""});
+        Project project = projectService.findById(id);
+        lastAction = buildLastAction(new String[] {"project.removeFail", project.getName()});
         try {
             projectService.remove(id);
-            lastAction = buildLastAction(new String[] {"project.removeSuccess", project});
+            lastAction = buildLastAction(new String[] {"project.removeSuccess", project.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
         }

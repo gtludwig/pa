@@ -1,6 +1,9 @@
 package ie.gtludwig.pa.model;
 
 import ie.gtludwig.pa.model.generic.BasePojo;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,10 +48,15 @@ public class Project  extends BasePojo {
     private ProjectState state = ProjectState.DRAFT;
 
     @ManyToOne
-    @JoinColumn(name = "guideline")
-    private Guideline guideline;
+    @JoinColumn(name = "guidelineAxis")
+    private Axis guidelineAxis;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(name = "pa_project2axis",
+            joinColumns = @JoinColumn(name = "projectId"),
+            inverseJoinColumns = @JoinColumn(name = "axisId"))
     private Set<Axis> axisSet;
 
 //    @OneToMany(mappedBy = "project")
@@ -58,7 +66,7 @@ public class Project  extends BasePojo {
     public Project() {
     }
 
-    public Project(User creator, User sponsor, LocalDateTime creationDate, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int counter, int ideal, ProjectState state) {
+    public Project(User creator, User sponsor, LocalDateTime creationDate, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int counter, int ideal, ProjectState state, Axis guidelineAxis) {
         this.creator = creator;
         this.sponsor = sponsor;
         this.creationDate = creationDate;
@@ -69,6 +77,7 @@ public class Project  extends BasePojo {
         this.counter = counter;
         this.ideal = ideal;
         this.state = state;
+        this.guidelineAxis = guidelineAxis;
     }
 
     public User getCreator() {
@@ -151,12 +160,12 @@ public class Project  extends BasePojo {
         this.state = state;
     }
 
-    public Guideline getGuideline() {
-        return guideline;
+    public Axis getGuidelineAxis() {
+        return guidelineAxis;
     }
 
-    public void setGuideline(Guideline guideline) {
-        this.guideline = guideline;
+    public void setGuidelineAxis(Axis guidelineAxis) {
+        this.guidelineAxis = guidelineAxis;
     }
 
     public Set<Axis> getAxisSet() {
