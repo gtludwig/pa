@@ -34,10 +34,12 @@ public class ProjectController {
     @Autowired
     private ApplicationContext context;
 
+    private String entityType = "project";
+
     private String lastAction;
 
-    private String buildLastAction(String[] params) {
-        return context.getMessage(params[0], new Object[] {params[1]}, Locale.US);
+    private String buildLastAction(String message, Object[] params) {
+        return context.getMessage(message, params, Locale.US);
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -70,7 +72,7 @@ public class ProjectController {
             return "project/create";
         }
 
-        lastAction = buildLastAction(new String[] {"project.createFail", errors.getAllErrors().toString()});
+        lastAction = buildLastAction("createFail", new Object[] {entityType, errors.getAllErrors().toString()});
         try {
 
             projectService.createProject(
@@ -82,8 +84,7 @@ public class ProjectController {
                     pojo.getName(),
                     pojo.getDescription()
             );
-
-            lastAction = buildLastAction(new String[] {"project.createSuccess", pojo.getName()});
+            lastAction = buildLastAction("createSuccess", new Object[] {entityType, pojo.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(e.toString());
@@ -128,7 +129,7 @@ public class ProjectController {
             return "project/edit?id=" + project.getId();
         }
 
-        lastAction = buildLastAction(new String[] {"project.editFail", project.getName()});
+        lastAction = buildLastAction("editFail", new Object[] {entityType, project.getName()});
         try {
 
             projectService.updateProject(
@@ -142,8 +143,7 @@ public class ProjectController {
                     project.getState(),
                     project.getAxisSet()
             );
-
-            lastAction = buildLastAction(new String[] {"project.editSuccess", project.getName()});
+            lastAction = buildLastAction("editSuccess", new Object[] {entityType, project.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
         }
@@ -155,10 +155,11 @@ public class ProjectController {
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     public String remove(ModelMap modelMap, @RequestParam(value = "id") String id, final RedirectAttributes redirectAttributes) {
         Project project = projectService.findById(id);
-        lastAction = buildLastAction(new String[] {"project.removeFail", project.getName()});
+
+        lastAction = buildLastAction("removeFail", new Object[] {entityType, project.getName()});
         try {
             projectService.remove(id);
-            lastAction = buildLastAction(new String[] {"project.removeSuccess", project.getName()});
+            lastAction = buildLastAction("removeSuccess", new Object[] {project.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
         }

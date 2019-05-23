@@ -27,12 +27,15 @@ public class Axis extends BasePojo {
     @Column(name = "guideline", nullable = false)
     private boolean guideline = false;
 
+    @Column(name = "numberOfRules", nullable = false)
+    private int numberOfRules = 1;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "pa_axis2rule",
             joinColumns = @JoinColumn(name = "axisId"),
             inverseJoinColumns = @JoinColumn(name = "ruleId"))
-    private Set<Rule> rulesSet;
+    private Set<Rule> ruleSet;
 
     public Axis() {
     }
@@ -41,7 +44,7 @@ public class Axis extends BasePojo {
         this.ordering = ordering;
         this.description = description;
         this.guideline = guideline;
-        this.rulesSet = rulesSet;
+        this.ruleSet = rulesSet;
     }
 
     public int getOrdering() {
@@ -76,11 +79,19 @@ public class Axis extends BasePojo {
         this.guideline = guideline;
     }
 
-    public Set<Rule> getRulesSet() {
-        return rulesSet;
+    public int getNumberOfRules() {
+        return numberOfRules;
     }
 
-    public void setRulesSet(Set<Rule> rulesSet) {
-        this.rulesSet = rulesSet;
+    public void setNumberOfRules(int numberOfRules) {
+        this.numberOfRules = numberOfRules;
+    }
+
+    public Set<Rule> getRuleSet() {
+        return ruleSet;
+    }
+
+    public void setRuleSet(Set<Rule> ruleSet) {
+        this.ruleSet = ruleSet;
     }
 }

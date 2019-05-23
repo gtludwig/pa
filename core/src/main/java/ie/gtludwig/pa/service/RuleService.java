@@ -10,11 +10,7 @@ public interface RuleService extends CrudService<Rule> {
 
     Set<Rule> createRuleSetForAxis(Axis axis);
 
-    Set<Rule> findDefaultRulesSetForAxis(Axis axis);
+    Set<Rule> createDefaultRulesSetForAxis(Axis axis);
 
     Rule findByDescription(String description);
-
-    Set<Rule> createRulesSetForGuideline(String name, int numberOfRules);
-
-    Set<Rule> updateRulesSetForGuideline_addRules(Set<Rule> rulesSet, String name, int numberOfRules);
 }

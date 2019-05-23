@@ -69,9 +69,9 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProject(String projectId, String sponsorId, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int ideal, ProjectState projectState, Set<Axis> axisSet) {
         Project project = findById(projectId);
 
-        if (axisSet == null) {
-            project.setAxisSet(axisService.createAxisSetForProject(project));
-        }
+//        if (axisSet == null) {
+//            project.setAxisSet(axisService.createAxisSetForProject(project));
+//        }
 
         project.setSponsor(userService.findById(sponsorId));
         project.setEvaluationStart(evaluationStart);
@@ -83,7 +83,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setAxisSet(axisSet);
 
         saveAndFlush(project);
-
     }
 
     protected Project saveAndFlush(Project project) {
@@ -142,7 +141,6 @@ public class ProjectServiceImpl implements ProjectService {
         project = saveAndFlush(project);
 
         updateProjectAxis(project);
-
     }
 
     protected void updateProjectAxis(Project project) {

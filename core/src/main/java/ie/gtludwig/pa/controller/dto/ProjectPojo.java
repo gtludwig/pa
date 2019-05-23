@@ -1,81 +1,46 @@
-package ie.gtludwig.pa.model;
+package ie.gtludwig.pa.controller.dto;
 
-import ie.gtludwig.pa.model.generic.BasePojo;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import ie.gtludwig.pa.model.Axis;
+import ie.gtludwig.pa.model.ProjectState;
+import ie.gtludwig.pa.model.User;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Entity
-@Table(name = "pa_project")
-public class Project  extends BasePojo {
+public class ProjectPojo {
 
-    private static final Long serialVersionUID = 1L;
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "creator")
     private User creator;
 
-    @ManyToOne
-    @JoinColumn(name = "sponsor")
     private User sponsor;
 
-    @Column(name = "creationDate", nullable = false, updatable = false)
     private LocalDateTime creationDate;
 
-    @Column(name = "evaluationStart", nullable = false)
     private LocalDateTime evaluationStart;
 
-    @Column(name = "evaluationEnd", nullable = false)
     private LocalDateTime evaluationEnd;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "counter")
-    private int counter = 0;
+    private int counter;
 
-    @Column(name = "ideal")
     private int ideal;
 
-    @Column(name = "state", nullable = false)
     private ProjectState state = ProjectState.DRAFT;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "guidelineAxis")
     private Axis guidelineAxis;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SELECT)
-    @JoinTable(name = "pa_project2axis",
-            joinColumns = @JoinColumn(name = "projectId"),
-            inverseJoinColumns = @JoinColumn(name = "axisId"))
     private Set<Axis> axisSet;
 
-//    @OneToMany(mappedBy = "project")
-//    private Set<Analysis> analysisSet;
-
-
-    public Project() {
+    public String getId() {
+        return id;
     }
 
-    public Project(User creator, User sponsor, LocalDateTime creationDate, LocalDateTime evaluationStart, LocalDateTime evaluationEnd, String name, String description, int counter, int ideal, ProjectState state, Axis guidelineAxis) {
-        this.creator = creator;
-        this.sponsor = sponsor;
-        this.creationDate = creationDate;
-        this.evaluationStart = evaluationStart;
-        this.evaluationEnd = evaluationEnd;
-        this.name = name;
-        this.description = description;
-        this.counter = counter;
-        this.ideal = ideal;
-        this.state = state;
-        this.guidelineAxis = guidelineAxis;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public User getCreator() {
@@ -173,12 +138,4 @@ public class Project  extends BasePojo {
     public void setAxisSet(Set<Axis> axisSet) {
         this.axisSet = axisSet;
     }
-//
-//    public Set<Analysis> getAnalysisSet() {
-//        return analysisSet;
-//    }
-//
-//    public void setAnalysisSet(Set<Analysis> analysisSet) {
-//        this.analysisSet = analysisSet;
-//    }
 }

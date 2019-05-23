@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <script type="text/javascript" th:inline="javascript">
+        //<![CDATA[
+        $(document).ready(function () {
+            // $('#applicationDefault').bootstrapToggle({
+            //     on: "application",
+            //     off: "project"
+            // });
+            //
+            // $('#guideline').bootstrapToggle({
+            //     on: "guideline",
+            //     off: "axis"
+            // });
+            // $('#description').datepicker();
+        })
+        // ]]>
+    </script>
+    <section class="forms">
+        <div class="row">
+            <div class="col-lg-12">
+                <th:block th:if="${lastAction != null}" >
+                    <div th:replace="~{fragments/message :: message}" />
+                </th:block>
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{axis.addAxis}">addAxis</span></h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form role="form" action="#" th:action="@{/project/axis/create}" th:object="${pojo}" method="post">
+
+
+                            <th:block th:if="${projectId != null}" >
+                                <div th:id="project" >
+                                    <div class="row">
+                                        <div th:hidden="true" th:for="idDiv">
+                                            <input type="text" id="idDiv" th:value="${projectId}" th:readonly="true">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label th:for="project" th:text="#{axis.addAxisToProject + ' + 'project.name'}">creator</label>
+                                            <input type="text" class="form-control" id="" th:value="${pojo.getProject().getName()}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </th:block>
+                            <div id="booleans" class="form-group row">
+
+                            <div id="applicationDefaultDiv" class="col-lg-6">
+                                <label th:for="applicationDefault" th:text="#{axis.applicationDefault}">description</label>
+                                <input id="applicationDefault" type="checkbox" th:field="*{applicationDefault}">
+                            </div>
+                            <div id="guidelineDiv" class="col-lg-6">
+                                <label th:for="toggle-guideline" th:text="#{axis.guideline}">name</label>
+                                <input id="guideline" type="checkbox" th:name="toggle-guideline" th:field="*{guideline}">
+                            </div>
+                        </div>
+
+                            <br />
+                            <div id="details" class="form-group row">
+                                <div id="descriptionDiv" class="col-lg-6">
+                                    <label th:for="description" th:text="#{axis.description}">description</label>
+                                    <input type="text" class="form-control" id="description" th:field="*{description}">
+                                </div>
+                                <div id="numberOfRulesDiv" class="col-lg-6">
+                                    <label th:for="name" th:text="#{axis.numberOfRules}">name</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{numberOfRules}" required th:min="1">
+                                </div>
+                            </div>
+                            <br />
+
+
+                            <div id="controls">
+                                <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
+                                <a th:href="@{/project/list}">
+                                    <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

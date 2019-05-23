@@ -50,7 +50,7 @@
 <!--                                    <td th:text="#{pojo.ordering}" />-->
                                     <td th:text="${pojo.name}" />
                                     <td th:text="${pojo.description}" />
-                                    <td th:text="${pojo.rulesSet.size()}" />
+                                    <td th:text="${pojo.ruleSet.size()}" />
                                     <td>
                                         <a th:href="@{/project/guideline/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
                                         <a th:href="@{/project/guideline/remove(id=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />

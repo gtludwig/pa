@@ -9,15 +9,28 @@ import java.util.Set;
 
 public interface AxisService extends CrudService<Axis> {
 
-    Set<Axis> findAllByProjectId(String projectId);
-
     List<Axis> findAll(boolean guideline);
 
-    Axis findByDescription(String description);
+    List<Axis> findAllDefaultAxis();
 
-//    Axis findDefaultGuidelineAxis();
+    Axis findByDescription(String description);
 
     Axis createGuidelineAxisForProject(Project project);
 
     Set<Axis> createAxisSetForProject(Project project);
+
+    void addRuleToAxis(String axisId);
+
+    void removeRuleFromAxis(String axisId);
+
+    List<Axis> findAllByProject(String projectId);
+
+    void createAxis(String projectId, String description, boolean applicationDefault, boolean guideline, int numberOfRules);
+
+    void updateAxis(String axisId, String projectId, String description, boolean applicationDefault, boolean guideline, int numberOfRules);
+
+    Project findProjectByProjectId(String projectId);
+
+    Project findProjectFromAxis(Axis axis);
+
 }

@@ -30,20 +30,22 @@ public class RuleServiceImpl implements RuleService {
     public Set<Rule> createRuleSetForAxis(Axis axis) {
         Set<Rule> rulesSet = new HashSet<>();
 
-        for (Rule rule : axis.getRulesSet()) {
-            rulesSet.add(ruleJpaRepository.saveAndFlush(new Rule(rule.getOrdering(), rule.getDescription())));
+        String description = axis.getDescription();
+
+        for (int i = 0; i < axis.getNumberOfRules(); i++) {
+            rulesSet.add(ruleJpaRepository.saveAndFlush(new Rule(i, description + " " + i)));
         }
 
         return rulesSet;
     }
 
     @Override
-    public Set<Rule> findDefaultRulesSetForAxis(Axis axis) {
+    public Set<Rule> createDefaultRulesSetForAxis(Axis axis) {
          Set<Rule> rulesSet = new HashSet<>();
 
          String ruleDescription;
 
-         for (int i = 0; i < 3; i++) {
+         for (int i = 0; i < axis.getNumberOfRules(); i++) {
              ruleDescription = axis.getDescription() + " " + i;
              if(findByDescription(ruleDescription) == null) {
                 rulesSet.add(ruleJpaRepository.saveAndFlush(new Rule(0, ruleDescription)));
@@ -53,33 +55,6 @@ public class RuleServiceImpl implements RuleService {
          }
 
         return rulesSet;
-    }
-
-
-
-    @Override
-    public Set<Rule> createRulesSetForGuideline(String name, int numberOfRules) {
-        Set<Rule> rulesSet = new HashSet<>();
-
-        for (int i = 0; i < numberOfRules; i++) {
-            rulesSet.add(new Rule(i, "Guideline " + name + " rule " + i));
-        }
-
-        return rulesSet;
-    }
-
-    @Override
-    public Set<Rule> updateRulesSetForGuideline_addRules(Set<Rule> rulesSet, String name, int numberOfRules) {
-        Set<Rule> newRulesSet = rulesSet;
-
-        int lastRuleIndex = rulesSet.size();
-        int additionalRules = numberOfRules - lastRuleIndex;
-
-        for (int i  = rulesSet.size(); i < additionalRules; i++) {
-            newRulesSet.add(new Rule(i, "Guideline " + name + " rule " + i));
-        }
-
-        return newRulesSet;
     }
 
     @Override
