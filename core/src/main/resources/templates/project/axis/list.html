@@ -8,6 +8,13 @@
     <title>Title</title>
 </head>
 <body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#axisTable').DataTable({
+            fixedHeader: true
+        });
+    });
+</script>
 <div layout:fragment="content" >
     <section class="forms">
 
@@ -25,6 +32,7 @@
                         <th:block th:if="${lastAction != null}" >
                             <div th:replace="~{fragments/message :: message}" />
                         </th:block>
+
                         <th:block th:if="${projectId == null}" sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
                             <a th:href="@{/project/axis/create}">
                                 <button class="btn btn-success btn-pill float-lg-right" th:text="#{axis.addDefaultAxis}">addDefaultAxis</button>
@@ -32,10 +40,17 @@
                         </th:block>
 
                         <th:block th:if="${projectId != null}" sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
-                            <a th:href="@{/project/axis/create(projectId=${projectId})}">
-                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{axis.addAxis}">addAxis</button>
-                            </a>
+                            <div class="">
+                                <a th:href="@{/project/axis/create(projectId=${projectId})}">
+                                    <button class="btn btn-success " th:text="#{axis.addAxis}">addAxis</button>
+                                </a>
+                                <a th:href="@{/project/list}">
+                                    <button class="btn btn-secondary" th:text="#{gen.returnProject}">addAxis</button>
+                                </a>
+                            </div>
+
                         </th:block>
+
 
                         <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
                             <table id="axisTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
@@ -53,16 +68,16 @@
                                     <td colspan="5" th:text="#{gen.noItems}">No Axis</td>
                                 </tr>
                                 <tr th:each="pojo : ${pojoList}">
-                                    <td th:text="${pojo.ordering}" />
+                                    <td style="text-align: center" th:text="${pojo.ordering}" />
                                     <td th:text="${pojo.description}" />
-                                    <td th:text="#{${pojo.guideline} ? 'gen.true' : 'gen.false'}" />
+                                    <td style="text-align: center" th:text="#{${pojo.guideline} ? 'gen.true' : 'gen.false'}" />
                                     <td>
                                         <span th:text="${pojo.ruleSet.size()}" />
-                                        <a th:href="@{/project/rule/list(id=${pojo.id})}" class="fa fa-search" th:title="#{rule.viewRules}" />
+                                        <a th:href="@{/project/axis/rule/list(axisId=${pojo.id})}" class="fa fa-search" th:title="#{rule.viewRules}" />
                                     </td>
-                                    <td>
-                                        <a th:href="@{/project/axis/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
-                                        <a th:href="@{/project/axis/remove(id=${pojo.id})}" class="fa fa-remove" th:title="#{gen.remove}" />
+                                    <td style="text-align: center">
+                                        <a th:href="@{/project/axis/edit(ruleId=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                        <a th:href="@{/project/axis/remove(ruleId=${pojo.id})}" class="fa fa-remove" th:title="#{gen.remove}" />
                                     </td>
                                 </tr>
                                 </tbody>

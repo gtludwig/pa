@@ -13,5 +13,7 @@ public interface UserProfileService extends CrudService<UserProfile> {
 
 //	List<UserProfile> findAllUserProfilesByUsername(String username);
 
-	List<UserProfile> findAllUserProfilesByUserId(String ssoId);
+	List<UserProfile> findAllUserProfilesByUserId(String userId);
+
+
 }

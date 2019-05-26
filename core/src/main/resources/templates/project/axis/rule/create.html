@@ -23,31 +23,27 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form role="form" action="#" th:action="@{/project/guideline/edit}" th:object="${pojo}" method="post">
-                            <div th:id="project" >
+                        <form role="form" action="#" th:action="@{/project/axis/rule/create}" th:object="${pojo}" method="post">
+                            <div th:id="axis" >
                                 <div th:hidden="true" th:for="idDiv">
                                     <input type="text" id="idDiv" th:value="*{id}" th:readonly="true">
                                 </div>
                             </div>
 
-                            <div th:id="sponsor" class="form-group row">
-                                <div class="col-lg-4">
-                                    <label th:for="name" th:text="#{guideline.name}">name</label>
-                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                            <div th:id="ruleDetails" class="form-group row">
+                                <div class="col-lg-6">
+                                    <label th:for="axisOrGuideline" th:text="#{rule.createAxisOrGuideline}">name</label>
+                                    <input type="text" class="form-control" id="axisOrGuideline" th:field="*{axisOrGuideline.description}" readonly>
                                 </div>
-                                <div class="col-lg-4">
-                                    <label th:for="description" th:text="#{guideline.description}">description</label>
+                                <div class="col-lg-6">
+                                    <label th:for="description" th:text="#{gen.description}">description</label>
                                     <input type="text" class="form-control" id="description" th:field="*{description}">
-                                </div>
-                                <div class="col-lg-4">
-                                    <label th:for="numberOfRules" th:text="#{guideline.numberOfRules}">numberOfRules</label>
-                                    <input type="text" class="form-control" id="numberOfRules" th:field="*{numberOfRules}">
                                 </div>
                             </div>
 
                             <div id="controls">
                                 <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
-                                <a th:href="@{/project/guideline/list}">
+                                <a th:href="@{/project/axis/rule/list(axisId=${axisId})}">
                                     <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
                                 </a>
                             </div>

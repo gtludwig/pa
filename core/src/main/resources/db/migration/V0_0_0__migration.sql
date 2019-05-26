@@ -11,7 +11,7 @@ CREATE TABLE `pa_user` (
   `id` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `firstName` varchar(255) NOT NULL,
-  `lastName` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `state` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
@@ -49,9 +49,9 @@ CREATE TABLE `pa_user2userProfile` (
 #   `name` varchar(255) NOT NULL,
 #   `sponsor` varchar(255) NOT NULL,
 #   `state` int(11) NOT NULL,
-#   `guideline` varchar(255) DEFAULT NULL,
+#   `rule` varchar(255) DEFAULT NULL,
 #   PRIMARY KEY (`id`),
-#   CONSTRAINT `FKe9vip34l0fnnx1lajpaeyeiwq` FOREIGN KEY (`guideline`) REFERENCES `pa_guideline` (`id`),
+#   CONSTRAINT `FKe9vip34l0fnnx1lajpaeyeiwq` FOREIGN KEY (`rule`) REFERENCES `pa_guideline` (`id`),
 #   CONSTRAINT `FKfwl4a1663jijkvnfuh9q6bkth` FOREIGN KEY (`creator`) REFERENCES `pa_user` (`id`),
 #   CONSTRAINT `FKk4eaehycnnqfpe0ulj2m65yo8` FOREIGN KEY (`sponsor`) REFERENCES `pa_user` (`id`)
 # ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -139,7 +139,7 @@ INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id`
 INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'SPONSOR'));
 INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'ADMIN'));
 
-# INSERT INTO `pa`.`pa_project` (`id`, `counter`, `creationDate`, `creator`, `description`, `evaluationEnd`, `evaluationStart`, `ideal`, `name`, `sponsor`, `state`, `guideline`) VALUES (UUID(), 0, curdate(), (SELECT `id` from `pa`.`pa_user` WHERE `username` LIKE 'master'), 'Default Project description', curdate() + interval 7 day, curdate(), 5, 'Default Project name', (SELECT `id` from `pa`.`pa_user` WHERE `username` LIKE 'master'), 0, (SELECT `id` from `pa`.`pa_guideline` WHERE `description` LIKE 'Default Guideline description'));
+# INSERT INTO `pa`.`pa_project` (`id`, `counter`, `creationDate`, `creator`, `description`, `evaluationEnd`, `evaluationStart`, `ideal`, `name`, `sponsor`, `state`, `rule`) VALUES (UUID(), 0, curdate(), (SELECT `id` from `pa`.`pa_user` WHERE `username` LIKE 'master'), 'Default Project description', curdate() + interval 7 day, curdate(), 5, 'Default Project name', (SELECT `id` from `pa`.`pa_user` WHERE `username` LIKE 'master'), 0, (SELECT `id` from `pa`.`pa_guideline` WHERE `description` LIKE 'Default Guideline description'));
 
 # INSERT INTO `pa`.`pa_guideline` (`id`, `description`, `name`, `ordering`) VALUES (UUID(), 'Default Guideline description', 'Default Guideline name', 0);
 

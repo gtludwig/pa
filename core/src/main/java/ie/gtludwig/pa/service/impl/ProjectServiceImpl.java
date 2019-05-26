@@ -161,7 +161,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> findAll() {
-        List<Project> projects = projectJpaRepository.findAll();
-        return projects;
+        return projectJpaRepository.findAll();
+    }
+
+    @Override
+    public Project findByGuidelineAxisEqualsOrAxisSet(Axis axis) {
+        Project p1 = projectJpaRepository.findByGuidelineAxisEquals(axis);
+        Project p2 = projectJpaRepository.findByAxisSetContains(axis);
+        return p1 != null ? p1 : p2;
     }
 }

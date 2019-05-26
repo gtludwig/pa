@@ -8,11 +8,17 @@
     <title>Title</title>
 </head>
 <body>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			    $('#projectTable').DataTable({
+			    	fixedHeader: true
+			    });
+			});
+		</script>
 <div layout:fragment="content" >
-    <section class="forms">
-
-        <div class="row">
-            <div class="col-lg-12">
+    <div class="container-fluid">
+        <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
+            <div class="col-md-auto col-lg-auto col-xl-auto">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                         <div class="card-title">
@@ -49,17 +55,17 @@
                                     <td colspan="9" th:text="#{gen.noItems}">No projects</td>
                                 </tr>
                                 <tr th:each="pojo : ${pojoList}">
-                                    <td th:text="${pojo.sponsor.username}" />
-                                    <td th:text="${pojo.creationDate}" />
-                                    <td th:text="${pojo.evaluationStart}" />
-                                    <td th:text="${pojo.evaluationEnd}" />
+                                    <td style="text-align: center" th:text="${pojo.sponsor.username}" />
+                                    <td style="text-align: center" th:text="${pojo.creationDate}" />
+                                    <td style="text-align: center" th:text="${pojo.evaluationStart}" />
+                                    <td style="text-align: center" th:text="${pojo.evaluationEnd}" />
                                     <td th:text="${pojo.name}" />
-                                    <td th:text="${pojo.counter + ' / '  + pojo.ideal}" />
-                                    <td th:text="#{${pojo.state}}" />
+                                    <td style="text-align: center" th:text="${pojo.counter + ' / '  + pojo.ideal}" />
+                                    <td style="text-align: center" th:text="#{${pojo.state}}" />
                                     <td th:text="${pojo.axisSet.size()}" />
-                                    <td>
-<!--                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />-->
-<!--                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />-->
+                                    <td style="text-align: center">
+                                        <!--                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />-->
+                                        <!--                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />-->
 
                                         <a th:href="@{/project/axis/list(projectId=${pojo.id})}" th:text="#{project.accessAxes}" />
                                         <a th:href="@{/project/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
@@ -74,6 +80,9 @@
 
             </div>
         </div>
+    </div>
+    <section class="forms">
+
     </section>
 
 </div>

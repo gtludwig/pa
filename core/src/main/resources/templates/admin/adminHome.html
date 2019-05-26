@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="mt-5"><span th:text="#{admin.adminDashboard}"/></h1>
+                <h5><span th:text="${user}"/> </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span th:text="#{admin.manageUser}" />
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/admin/user/list}">
+                            <button class="btn btn-pill"  th:text="#{admin.listUsers}" />
+                       </a>
+                        <th:block sec:authorize="hasRole(''ROLE_ADMIN'')">
+                            <a th:href="@{/admin/user/create}">
+                                <button class="btn btn-pill"  th:text="#{user.createUser}" />
+                            </a>
+                        </th:block>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span th:text="#{admin.manageSettings}" />
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/project/axis/list}">
+                            <button class="btn btn-pill" th:text="#{axis.listDefaultAxis}" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

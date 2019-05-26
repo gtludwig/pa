@@ -24,4 +24,6 @@ public interface ProjectService extends CrudService<Project> {
 
     List<User> findAllSponsorUsers();
 
+    Project findByGuidelineAxisEqualsOrAxisSet(Axis axis);
+
 }

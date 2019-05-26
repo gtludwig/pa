@@ -200,7 +200,7 @@ public class AxisServiceImpl implements AxisService {
             Project project = projectService.findById(projectId);
             axis.setOrdering(project.getAxisSet().size());
             project.getAxisSet().add(axis);
-//            if (guideline) {
+//            if (rule) {
 //                project.setGuidelineAxis(axis);
 //            }
             projectService.save(project);
@@ -245,12 +245,12 @@ public class AxisServiceImpl implements AxisService {
     }
 
     @Override
+    public Project findProjectFromAxisId(String axisId) {
+        return findProjectFromAxis(findById(axisId));
+    }
+
+    @Override
     public Project findProjectFromAxis(Axis axis) {
-        for (Project project : projectService.findAll()) {
-            if(project.getGuidelineAxis().equals(axis) || project.getAxisSet().contains(axis)) {
-                return project;
-            }
-        }
-        return null;
+        return projectService.findByGuidelineAxisEqualsOrAxisSet(axis);
     }
 }

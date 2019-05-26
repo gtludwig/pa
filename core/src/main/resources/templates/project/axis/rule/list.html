@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#rulesTable').DataTable({
+            fixedHeader: true
+        });
+    });
+</script>
+<div layout:fragment="content">
+    <section class="forms">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{rule.viewRules}">viewRules</span></h4>
+                        </div>
+                    </div>
+                    <th:block th:if="${lastAction != null}" >
+                        <div th:replace="~{fragments/message :: message}" />
+                    </th:block>
+
+                    <div class="card-body">
+                        <div id="controls" class="float-left">
+                            <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
+                                <a th:href="@{/project/axis/rule/create(axisId=${axisId})}">
+                                    <button class="btn btn-success" th:text="#{gen.create}">create</button>
+                                </a>
+                            </th:block>
+                            <a th:href="@{/project/axis/list(projectId=${projectId})}">
+                                <button class="btn btn-secondary" th:text="#{gen.returnAxis}">back</button>
+                            </a>
+                        </div>
+
+
+                        <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                            <table id="rulesTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                                <thead>
+                                <tr>
+                                    <th th:text="#{gen.ordering}"></th>
+                                    <th th:text="#{gen.description}"></th>
+                                    <th th:text="#{gen.actions}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${pojoList.empty}">
+                                    <td colspan="3" th:text="#{gen.noItems}">No Guidelines</td>
+                                </tr>
+                                <tr th:each="pojo : ${pojoList}">
+                                    <td style="text-align: center" th:text="${pojo.ordering}" />
+                                    <td th:text="${pojo.description}" />
+                                    <td style="text-align: center">
+                                        <a th:href="@{/project/axis/rule/edit(ruleId=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                        <a th:href="@{/project/axis/rule/remove(ruleId=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

@@ -31,6 +31,8 @@ public interface AxisService extends CrudService<Axis> {
 
     Project findProjectByProjectId(String projectId);
 
+    Project findProjectFromAxisId(String axisId);
+
     Project findProjectFromAxis(Axis axis);
 
 }

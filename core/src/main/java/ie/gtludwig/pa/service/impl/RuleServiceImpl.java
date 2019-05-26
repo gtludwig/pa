@@ -2,16 +2,20 @@ package ie.gtludwig.pa.service.impl;
 
 import ie.gtludwig.pa.dao.RuleJpaRepository;
 import ie.gtludwig.pa.model.Axis;
+import ie.gtludwig.pa.model.Project;
 import ie.gtludwig.pa.model.Rule;
+import ie.gtludwig.pa.service.AxisService;
 import ie.gtludwig.pa.service.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service(value = "ruleService")
 public class RuleServiceImpl implements RuleService {
@@ -20,6 +24,9 @@ public class RuleServiceImpl implements RuleService {
 
     @Autowired
     private RuleJpaRepository ruleJpaRepository;
+
+    @Autowired
+    private AxisService axisService;
 
     @Override
     public Rule findByDescription(String description) {
@@ -53,8 +60,55 @@ public class RuleServiceImpl implements RuleService {
                  rulesSet.add(findByDescription(ruleDescription));
              }
          }
-
         return rulesSet;
+    }
+
+    @Override
+    public List<Rule> findAllFromAxisByAxisId(String axisId) {
+        return axisService.findById(axisId).getRuleSet().stream()
+                .sorted(Comparator.comparingInt(Rule::getOrdering))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void createRule(String axisId, String description) {
+        Axis axis = findAxisByAxisId(axisId);
+
+        Rule rule = new Rule();
+        rule.setOrdering(axis.getRuleSet().size());
+        rule.setDescription(description);
+
+        rule = ruleJpaRepository.saveAndFlush(rule);
+
+        updateAxisFromRule(axis, rule);
+    }
+
+    private void updateAxisFromRule(Axis axis, Rule rule) {
+        axis.getRuleSet().add(rule);
+        axis.setNumberOfRules(axis.getRuleSet().size());
+        axisService.save(axis);
+    }
+
+    @Override
+    public void updateRule(String ruleId, String description) {
+        Rule rule = findById(ruleId);
+        rule.setDescription(description);
+        save(rule);
+    }
+
+    @Override
+    public Axis findAxisByAxisId(String axisId) {
+        return axisService.findById(axisId);
+    }
+
+    @Override
+    public Axis findAxisFromRule(Rule rule) {
+        return axisService.findAll().stream().filter(axis -> axis.getRuleSet().contains(rule)).findFirst().orElse(null);
+    }
+
+    @Override
+    public Project findProjectByAxisId(String axisId) {
+        return axisService.findProjectFromAxisId(axisId);
     }
 
     @Override

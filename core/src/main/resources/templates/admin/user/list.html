@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content" >
+    <div class="container-fluid">
+        <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
+            <div class="col-md-auto col-lg-auto col-xl-auto">
+                <div class="card ">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{project.projectsView}">projectsView</span></h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <th:block th:if="${lastAction != null}">
+                            <div th:replace="~{fragments/message :: message} " />
+                        </th:block>
+
+                        <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
+                            <a th:href="@{/admin/user/create}" sec:authorize="hasRole(''ROLE_ADMIN'')">
+                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{user.createUser}">create</button>
+                            </a>
+                        </th:block>
+                        <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                            <table id="usersTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                                <thead>
+                                <tr>
+                                    <th th:text="#{user.username}" />
+                                    <th th:text="#{user.email}" />
+                                    <th th:text="#{user.fullName}" />
+                                    <th th:text="#{user.state}" />
+                                    <th th:text="#{user.profiles}" />
+                                    <th th:text="#{gen.actions}" />
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="pojo : ${pojoList}">
+                                    <td th:text="${pojo.username}" />
+                                    <td th:text="${pojo.email}" />
+                                    <td th:text="${pojo.firstName + ' ' + pojo.lastName}" />
+                                    <td style="text-align: center" th:text="#{${pojo.state}}" />
+                                    <td style="text-align: center" >
+                                        <table th:each="profile : ${pojo.userProfileSet}" >
+                                            <tr><td th:text="${profile.type}"></td></tr>
+                                        </table>
+                                    </td>
+                                    <td style="text-align: center" >
+                                        <a th:href="@{/admin/user/edit(id=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
+                                        <a th:href="@{/admin/user/remove(id=${pojo.id})}" th:attr="onclick='return confirm(\'' + #{gen.confirm} + '\');'" class="fa fa-remove" th:title="#{gen.remove}" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

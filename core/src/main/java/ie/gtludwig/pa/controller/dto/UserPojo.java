@@ -15,6 +15,8 @@ public class UserPojo {
 
     private String password;
 
+    private String passwordConfirm;
+
     private String firstName;
 
     private String lastName;
@@ -53,6 +55,14 @@ public class UserPojo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     public String getFirstName() {

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments/login}" >
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="text-center" >
+        <form class="form-signin" action="/" th:object="${user}" method="POST" enctype="utf8">
+            <div class="h3 mb-3 font-weight-normal">
+                <span th:text="#{user.registration}">form</span>
+            </div>
+
+            <div>
+                <label class="sr-only" th:text="#{user.firstName}" />
+                <input type="text" class="form-control" th:placeholder="#{user.firstName}" th:field="*{firstName}" required/>
+                <p th:each="error: ${#fields.errors('firstName')}"
+                   th:text="${error}">Validation error</p>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{user.lastName}" />
+                <input type="text" class="form-control" th:placeholder="#{user.lastName}" th:field="*{lastName}" required/>
+                <p th:each="error : ${#fields.errors('lastName')}"
+                   th:text="${error}">Validation error</p>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{user.email}" />
+                <input type="email" class="form-control" th:placeholder="#{user.email}" th:field="*{email}" required/>
+                <p th:each="error : ${#fields.errors('email')}"
+                   th:text="${error}">Validation error</p>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{user.password}">password</label>
+                <input type="password" class="form-control"th:placeholder="#{user.password}"  th:field="*{password}"/>
+                <p th:each="error : ${#fields.errors('password')}"
+                   th:text="${error}">Validation error</p>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{user.passwordConfirm}">confirm</label>
+                <input type="password" class="form-control" th:placeholder="#{user.passwordConfirm}" th:field="*{passwordConfirm}"/>
+            </div>
+            <button type="submit" th:text="#{gen.submit}">submit</button>
+        </form>
+<!--        <a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>-->
+    </div>
+</div>
+</body>
+</html>

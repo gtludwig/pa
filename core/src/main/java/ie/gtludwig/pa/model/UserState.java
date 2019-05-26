@@ -2,9 +2,9 @@ package ie.gtludwig.pa.model;
 
 public enum UserState {
 
-    ACTIVE("status.active"),
-    INACTIVE("status.inactive"),
-    LOCKED("status.locked");
+    ACTIVE("user.status-active"),
+    INACTIVE("user.status-inactive"),
+    LOCKED("user.status-locked");
 
     private String state;
 

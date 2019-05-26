@@ -7,9 +7,9 @@
 <body>
 
 <div class="container">
-    <div class=" text-center" >
+    <div class="text-center" >
         <form class="form-signin" th:action="@{/login}" method="post">
-                <div class="h3 mb-3 font-weight-normal">
+            <div class="h3 mb-3 font-weight-normal">
                 <span style="text-transform: uppercase;" th:text="#{gen.signin}" />
             </div>
             <div >
@@ -20,6 +20,7 @@
                 <label class="sr-only" th:text="#{gen.password}" />
                 <input type="password" id="password" name="password" class="form-control" th:placeholder="#{gen.password}" required>
             </div>
+
             <div class="checkbox mb-3">
                 <label>
                     <input type="checkbox" value="remember-me" th:text="#{gen.rememberme}">
@@ -27,6 +28,16 @@
             </div>
             <input type="submit" class="btn btn-lg btn-primary btn-block" th:value="#{gen.signin}">
         </form>
+        <div class="row">
+            <div class="col align-self-center">
+                <a th:href="@{/registration}">
+                    <button class="btn btn-secondary" th:text="#{user.register}" />
+                </a>
+                <a th:href="@{/forgotPassword}">
+                    <button class="btn btn-secondary" th:text="#{user.forgotPassword}" />
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

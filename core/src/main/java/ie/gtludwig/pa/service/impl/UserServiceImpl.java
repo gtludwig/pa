@@ -10,11 +10,15 @@ import ie.gtludwig.pa.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
@@ -41,7 +45,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProfile> findAllUserProfiles() { return userProfileService.findAll(); }
+    public List<UserProfile> findAllUserProfiles() {
+        return userProfileService.findAll();
+    }
+
+    @Override
+    public List<UserProfile> findAllUserProfiles(String loggedUsername) {
+        User loggedUser = findByEmail(getPrincipal());
+        UserProfile userProfile = userProfileService.findUserProfileByType(UserProfileType.ADMIN.getUserProfileType());
+
+        if (loggedUser.getUserProfileSet().contains(userProfile)) {
+            return userProfileService.findAll();
+        } else {
+            return loggedUser.getUserProfileSet().stream().collect(Collectors.toList());
+        }
+    }
+
+    private String getPrincipal() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Override
     public List<User> findAllByUserProfileType(UserProfileType userProfileType) {
@@ -54,6 +76,32 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userProfileTypeList;
+    }
+
+    @Override
+    public void createUser(String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) {
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword(password);
+        user.setUserProfileSet(userProfileSet);
+
+        save(user);
+    }
+
+    @Override
+    public void updateUser(String userId, String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) {
+        User user = findById(userId);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUserProfileSet(userProfileSet);
+
+        save(user);
     }
 
     @Override

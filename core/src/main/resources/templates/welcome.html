@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
@@ -8,14 +9,28 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container">
-        Welcome!
-        <a th:href="@{/project/list}">
-            <button class="btn" th:text="#{project.list}" >listProjects</button>
-        </a>
-        <a th:href="@{/project/guideline/list}">
-            <button class="btn" th:text="#{guideline.list}" >listProjects</button>
-        </a>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
+                <div class="col-md-auto col-lg-auto col-xl-auto">
+                    <h1 class="mt-5">Welcome!</h1>
+                    <ul class="list-unstyled">
+                        <th:block sec:authorize="hasRole(''ROLE_ADMIN'')" >
+                            <li>
+                                <a th:href="@{/admin/adminHome}">
+                                    <button class="btn" th:text="#{admin.adminDashboard}">create</button>
+                                </a>
+                            </li>
+                        </th:block>
+                        <li>
+                            <a th:href="@{/project/list}">
+                                <button class="btn" th:text="#{project.list}" >listProjects</button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

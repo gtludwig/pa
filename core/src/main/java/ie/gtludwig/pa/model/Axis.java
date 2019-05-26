@@ -24,7 +24,7 @@ public class Axis extends BasePojo {
     @Column(name = "applicationDefault", nullable = false)
     private boolean applicationDefault = false;
 
-    @Column(name = "guideline", nullable = false)
+    @Column(name = "rule", nullable = false)
     private boolean guideline = false;
 
     @Column(name = "numberOfRules", nullable = false)

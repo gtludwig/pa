@@ -69,7 +69,7 @@ public class AxisController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public void addDefaultAxis(ModelMap modelMap, @RequestParam(value = "projectId", required = false) String projectId, RedirectAttributes redirectAttributes) {
+    public void createAxis(ModelMap modelMap, @RequestParam(value = "projectId", required = false) String projectId, RedirectAttributes redirectAttributes) {
         AxisPojo pojo = new AxisPojo();
 
         if (projectId != null) {
@@ -81,7 +81,7 @@ public class AxisController {
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String addDefaultAxis(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") AxisPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
+    public String createAxis(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") AxisPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
         String projectId = pojo.getProject().getId() != null ? pojo.getProject().getId() : null;
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
@@ -145,6 +145,7 @@ public class AxisController {
         return projectId != null ? "redirect:list?projectId=" + projectId : "redirect:list";
     }
 
+    @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     public String remove(ModelMap modelMap, @RequestParam(value = "id") String id, final RedirectAttributes redirectAttributes) {
         AxisPojo pojo = populatePojoFromEntity(axisService.findById(id));

@@ -20,6 +20,6 @@ public class LoginController {
             logger.debug("getWelcome is executed");
 
         }
-        return principal == null ? "homeNotSignedIn" : "welcome";
+        return principal == null ? "login" : "welcome";
     }
 }

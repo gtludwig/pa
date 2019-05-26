@@ -8,92 +8,30 @@
 <body>
 
 <div th:fragment="header">
-    <!-- Static navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/}">My project</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <!--      <li class="nav-item">-->
-                    <!--        <a class="nav-link" href="#">Link</a>-->
-                    <!--      </li>-->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" th:href="@{/project/list}" th:text="#{project.list}">projects</a>
-<!--                            <a class="dropdown-item" th:href="@{/project/guideline/list}" th:text="#{guideline.list}">projects</a>-->
-                            <a class="dropdown-item" th:href="@{/project/axis/list}" th:text="#{axis.listDefaultAxis}">projects</a>
-                            <!--          <a class="dropdown-item" href="#">Another action</a>-->
-                            <!--          <div class="dropdown-divider"></div>-->
-                            <!--          <a class="dropdown-item" href="#">Something else here</a>-->
-                        </div>
-                    </li>
-                    <!--      <li class="nav-item">-->
-                    <!--        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
-                    <!--      </li>-->
-                    <li sec:authorize="isAuthenticated()">
-                        <a th:href="@{/logout}" onclick="$('#form').submit();">
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true">logout</span>
-                        </a>
-                        <form id="form" method="post" action="#" th:action="@{/logout}"></form>
-                    </li>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" th:href="@{/}">Project Analytics</a>
 
-                    <li>
-                        <a th:href="@{/logout}" onclick="$('#form').submit();">
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true">logout</span>
-                        </a>
-                        <form id="form" method="post" action="#" th:action="@{/logout}"></form>
-                    </li>
-                </ul>
-                <!--                <form class="form-inline my-2 my-lg-0">-->
-                <!--      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-                <!--      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
-                <!--    </form>-->
-            </div>
-        </div>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" th:href="@{/project/list}" th:text="#{project.list}">projects</a>
+<!--                    <a class="dropdown-item" th:href="@{/project/axis/list}" th:text="#{axis.listDefaultAxis}">projects</a>-->
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav px-3">
+
+            <li class="nav-item text-nowrap" sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}" onclick="$('#form').submit();">
+                    <span class="fa fa-sign-out" aria-hidden="true" th:title="#{gen.logout}"/>
+                </a>
+                <form id="form" method="post" action="#" th:action="@{/logout}"></form>
+            </li>
+        </ul>
     </nav>
-
-    <!--    <div class="container" >-->
-    <!--        <div class="navbar-header">-->
-    <!--            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">-->
-    <!--                <span class="icon-bar"></span>-->
-    <!--                <span class="icon-bar"></span>-->
-    <!--                <span class="icon-bar"></span>-->
-    <!--            </button>-->
-    <!--            <a class="navbar-brand" href="#">My project</a>-->
-    <!--        </div>-->
-    <!--        <div class="navbar-collapse collapse">-->
-    <!--            <ul class="nav navbar-nav">-->
-    <!--                <li th:classappend="${module == 'home' ? 'active' : ''}">-->
-    <!--                    <a href="#" th:href="@{/}">Home</a>-->
-    <!--                </li>-->
-    <!--                <li th:classappend="${module == 'tasks' ? 'active' : ''}">-->
-    <!--                    <a href="#" th:href="@{/task}">Tasks</a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-    <!--            <ul class="nav navbar-nav navbar-right">-->
-    <!--                <li sec:authorize="isAuthenticated()">-->
-    <!--                    <a href="/signin" th:href="@{/signin}">-->
-    <!--                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;Sign in-->
-    <!--                    </a>-->
-    <!--                </li>-->
-    <!--                <li sec:authorize="isAuthenticated()">>-->
-    <!--                    <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">-->
-    <!--                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout-->
-    <!--                    </a>-->
-    <!--                    <form id="form" method="post" action="#" th:action="@{/logout}"></form>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-    <!--        </div>-->
-    <!--    </div>-->
 </div>
 </body>
 </html>
