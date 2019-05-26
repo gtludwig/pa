@@ -8,7 +8,13 @@
     <title>Title</title>
 </head>
 <body>
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#userTable').DataTable({
+            fixedHeader: true
+        });
+    });
+</script>
 <div layout:fragment="content" >
     <div class="container-fluid">
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
@@ -30,7 +36,7 @@
                             </a>
                         </th:block>
                         <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
-                            <table id="usersTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
+                            <table id="userTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
                                 <thead>
                                 <tr>
                                     <th th:text="#{user.username}" />

@@ -9,36 +9,36 @@
 </head>
 <body>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#form").validate({
+            rules: {
+                password: "required",
+                passwordConfirm: {
+                    equalTo: "#password"
+                }
+            }
+        });
+
+        $('#selectedProfiles').bootstrapDualListbox({
+            filterTextClear: 'show all',
+            filterPlaceHolder: 'Filter',
+            moveSelectedLabel: 'Move Selected',
+            moveAllLabel: "Add All",
+            removeSelectedLabel: 'Remove Selected',
+            removeAllLabel: "Remove All",
+            moveOnSelect: true,
+            showFilterInputs: false,
+            infoText: false,
+            btnMoveText: 'Add',
+            btnMoveAllText: 'Add All',
+            btnRemoveText: 'Remove',
+            btnRemoveAllText: 'Remove All',
+        });
+    });
+</script>
 <div layout:fragment="content">
     <div class="container-fluid">
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $("#form").validate({
-                    rules: {
-                        password: "required",
-                        passwordConfirm: {
-                            equalTo: "#password"
-                        }
-                    }
-                });
-
-                $('#selectedProfiles').bootstrapDualListbox({
-                    filterTextClear: 'show all',
-                    filterPlaceHolder: 'Filter',
-                    moveSelectedLabel: 'Move Selected',
-                    moveAllLabel: "Add All",
-                    removeSelectedLabel: 'Remove Selected',
-                    removeAllLabel: "Remove All",
-                    moveOnSelect: true,
-                    showFilterInputs: false,
-                    infoText: false,
-                    btnMoveText: 'Add',
-                    btnMoveAllText: 'Add All',
-                    btnRemoveText: 'Remove',
-                    btnRemoveAllText: 'Remove All',
-                });
-            });
-        </script>
 
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
             <div class="col-md-auto col-lg-auto col-xl-auto">

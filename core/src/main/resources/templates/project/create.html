@@ -8,33 +8,30 @@
     <title>Title</title>
 </head>
 <body>
+<script type="text/javascript">
+    //<![CDATA[
+    $(document).ready(function () {
+        $('#evaluationStart').datepicker({
+            calendarWeeks: true,
+            autoClose:true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        });
+
+        $('#evaluationEnd').datepicker({
+            calendarWeeks: true,
+            autoClose: true,
+            format: 'dd/mm/yyyy',
+            endDate: '+7d'
+        });
+
+    })
+    // ]]>
+</script>
 <div layout:fragment="content">
-    <script type="text/javascript">
-        //<![CDATA[
-        $(document).ready(function () {
-            $('#evaluationStart').datepicker({
-                calendarWeeks: true,
-                autoClose:true,
-                format: 'dd/mm/yyyy',
-                todayHighlight: true
-            });
-
-            $('#evaluationEnd').datepicker({
-                calendarWeeks: true,
-                autoClose: true,
-                format: 'dd/mm/yyyy',
-                endDate: '+7d'
-            });
-
-        })
-        // ]]>
-    </script>
-    <section class="forms">
-        <div class="row">
-            <div class="col-lg-12">
-                <th:block th:if="${lastAction != null}" >
-                    <div th:replace="~{fragments/message :: message}" />
-                </th:block>
+    <div class="container-fluid">
+        <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
+            <div class="col-md-auto col-lg-auto col-xl-auto">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                         <div class="card-title">
@@ -51,7 +48,7 @@
                                 <div th:id="sponsor" class="form-group row">
                                     <div class="col-lg-6">
                                         <label th:for="sponsorId" th:text="#{project.selectSponsor}">selectSponsor</label>
-                                        <select class="form-control custom-select" th:field="*{sponsor}" required>
+                                        <select id="sponsorId" class="form-control custom-select" th:field="*{sponsor}" required>
                                             <option selected value=""></option>
                                             <option th:each="sponsor : ${sponsors}"
                                                     th:value="${sponsor.id}"
@@ -92,6 +89,34 @@
                                 </div>
                             </div>
 
+                            <div id="expandedDetails" class="form-group row">
+                                <div class="col-lg-3">
+                                    <label th:for="ideal" th:text="#{project.ideal}">ideal</label>
+                                    <input type="number" class="form-control" id="ideal" th:field="*{ideal}">
+                                </div>
+                                <div class="col-lg-3">
+                                    <label th:for="status" th:text="#{project.projectState}">projectState</label>
+                                    <select id="status" class="form-control custom-select" th:field="*{state}">
+                                        <option th:each="state : ${T(ie.gtludwig.pa.model.ProjectState).values()}"
+                                                th:value="${state}"
+                                                th:selected="${state == T(ie.gtludwig.pa.model.ProjectState)}"
+                                                th:text="#{${state}}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <label th:for="guidelineId" th:text="#{project.selectGuideline}">selectGuideline</label>
+                                    <select id="guidelineId" class="form-control custom-select" th:field="*{guideline}">
+                                        <option th:each="guideline : ${guidelines}"
+                                                th:value="${guideline}"
+                                                th:selected="${guidelines.contains(guideline)}"
+                                                th:text="${guideline.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div id="controls">
                                 <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
                                 <a th:href="@{/project/list}">
@@ -99,21 +124,12 @@
                                 </a>
                             </div>
                         </form>
-
-
                     </div>
-
-
-
-
                 </div>
-
-
-
             </div>
-    </section>
+        </div>
+    </div>
 
 </div>
-
 </body>
 </html>
