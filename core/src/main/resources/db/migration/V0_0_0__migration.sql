@@ -13,11 +13,11 @@ CREATE TABLE `pa_user` (
                            `lastName`  varchar(255) NOT NULL,
                            `password`  varchar(255) NOT NULL,
                            `state`     varchar(255) NOT NULL,
-                           `username`  varchar(255) NOT NULL,
+#  `username`  varchar(255) NOT NULL,
                            `enabled`   bit(1) DEFAULT NULL,
                            PRIMARY KEY (`id`),
-                           UNIQUE KEY `UK_fupbh7oy8lskxu8htqy1q1bqo` (`email`),
-                           UNIQUE KEY `UK_cf8y2a09g8gk0ysqqtyyx70c2` (`username`)
+                           UNIQUE KEY `UK_fupbh7oy8lskxu8htqy1q1bqo` (`email`)
+#  UNIQUE KEY `UK_cf8y2a09g8gk0ysqqtyyx70c2` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pa_user2userProfile` (
@@ -28,6 +28,19 @@ CREATE TABLE `pa_user2userProfile` (
   CONSTRAINT `FKo7bnr6wfcewt6i6cjw9s1abn` FOREIGN KEY (`userProfileId`) REFERENCES `pa_userProfile` (`id`),
   CONSTRAINT `FKtcx6u47odtc55oin546ugtaw8` FOREIGN KEY (`userId`) REFERENCES `pa_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `pa_axis`
+(
+    `id`                 varchar(255) NOT NULL,
+    `applicationDefault` bit(1)       NOT NULL,
+    `description`        varchar(255) NOT NULL,
+    `rule`               bit(1)       NOT NULL,
+    `numberOfRules`      int(11)      NOT NULL,
+    `ordering`           int(11)      NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
 
 CREATE TABLE `pa_project` (
   `id` varchar(255) NOT NULL,
@@ -62,17 +75,6 @@ CREATE TABLE `pa_project2specialists`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
-CREATE TABLE `pa_axis` (
-  `id` varchar(255) NOT NULL,
-  `active` bit(1) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `ordering` int(11) NOT NULL,
-  `projectId` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKjdvdvjf0js0cu1vj31kkk1opq` (`projectId`),
-  CONSTRAINT `FKjdvdvjf0js0cu1vj31kkk1opq` FOREIGN KEY (`projectId`) REFERENCES `pa_project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `pa_rule` (
   `id` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -89,7 +91,6 @@ CREATE TABLE `pa_axis2rule` (
   CONSTRAINT `FKni60qdicnpq0wmp16231ic1oa` FOREIGN KEY (`ruleId`) REFERENCES `pa_rule` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE `pa_analysis` (
   `id` varchar(255) NOT NULL,
   `analyst` tinyblob NOT NULL,
@@ -102,6 +103,30 @@ CREATE TABLE `pa_analysis` (
   CONSTRAINT `FK3gy3857xci5h0q5m769xy3ssa` FOREIGN KEY (`projectId`) REFERENCES `pa_project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `pa_passwordResetToken`
+(
+    `id`         varchar(255) NOT NULL,
+    `expiryDate` datetime     DEFAULT NULL,
+    `token`      varchar(255) DEFAULT NULL,
+    `userId`     varchar(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FKft7oeo141q7ni8ysn80xtcskf` (`userId`),
+    CONSTRAINT `FKft7oeo141q7ni8ysn80xtcskf` FOREIGN KEY (`userId`) REFERENCES `pa_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+
+CREATE TABLE `pa_verificationToken`
+(
+    `id`         varchar(255) NOT NULL,
+    `expiryDate` datetime     DEFAULT NULL,
+    `token`      varchar(255) DEFAULT NULL,
+    `userId`     varchar(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FK5o9x0lbau26x9i1367pf2fpas` (`userId`),
+    CONSTRAINT `FK5o9x0lbau26x9i1367pf2fpas` FOREIGN KEY (`userId`) REFERENCES `pa_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+
 INSERT  INTO `pa`.`pa_userProfile` (`id`, `type`) VALUES (UUID(), 'USER');
 INSERT  INTO `pa`.`pa_userProfile` (`id`, `type`) VALUES (UUID(), 'SPECIALIST');
 INSERT  INTO `pa`.`pa_userProfile` (`id`, `type`) VALUES (UUID(), 'SPONSOR');
@@ -109,10 +134,18 @@ INSERT  INTO `pa`.`pa_userProfile` (`id`, `type`) VALUES (UUID(), 'ADMIN');
 
 INSERT INTO `pa_user`
 VALUES (UUID(), 'hello@pa.ie', 'MasterUser', 'DefaultUser',
-        '$2a$10$cTGkYBhRSUBDwbvZFdRtZesRNu0WcMAPyQ94ev4uug4ZCgZaCDK0u', 'user.status-active', 'master', 1);
+        '$2a$10$cTGkYBhRSUBDwbvZFdRtZesRNu0WcMAPyQ94ev4uug4ZCgZaCDK0u', 'user.status-active', 1);
 
-INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'USER'));
-INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'SPECIALIST'));
-INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'SPONSOR'));
-INSERT INTO `pa_user2userProfile` (`userId`,`userProfileId`)VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `username` LIKE 'master'),(SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'ADMIN'));
+INSERT INTO `pa_user2userProfile` (`userId`, `userProfileId`)
+VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `email` LIKE 'hello@pa.ie'),
+        (SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'USER'));
+INSERT INTO `pa_user2userProfile` (`userId`, `userProfileId`)
+VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `email` LIKE 'hello@pa.ie'),
+        (SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'SPECIALIST'));
+INSERT INTO `pa_user2userProfile` (`userId`, `userProfileId`)
+VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `email` LIKE 'hello@pa.ie'),
+        (SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'SPONSOR'));
+INSERT INTO `pa_user2userProfile` (`userId`, `userProfileId`)
+VALUES ((SELECT `id` FROM `pa`.`pa_user` WHERE `email` LIKE 'hello@pa.ie'),
+        (SELECT `id` from `pa`.`pa_userProfile` WHERE `type` LIKE 'ADMIN'));
 
