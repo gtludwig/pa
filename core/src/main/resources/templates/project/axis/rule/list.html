@@ -16,6 +16,8 @@
     });
 </script>
 <div layout:fragment="content">
+    <br/>
+    <br/>
     <div class="container-fluid">
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
             <div class="col-md-auto col-lg-auto col-xl-auto">
@@ -25,18 +27,19 @@
                             <h4><span th:text="#{rule.viewRules}">viewRules</span></h4>
                         </div>
                     </div>
-                    <th:block th:if="${lastAction != null}" >
-                        <div th:replace="~{fragments/message :: message}" />
-                    </th:block>
 
                     <div class="card-body">
-                        <div id="controls" class="float-left">
+                        <th:block th:if="${lastAction != null}">
+                            <div th:replace="~{fragments/message :: message}"/>
+                        </th:block>
+
+                        <div id="controls">
                             <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
                                 <a th:href="@{/project/axis/rule/create(axisId=${axisId})}">
                                     <button class="btn btn-success" th:text="#{gen.create}">create</button>
                                 </a>
                             </th:block>
-                            <a th:href="@{/project/axis/list(projectId=${projectId})}">
+                            <a th:href="@{/project/axis/list(axisId=${axisId})}">
                                 <button class="btn btn-secondary" th:text="#{gen.returnAxis}">back</button>
                             </a>
                         </div>

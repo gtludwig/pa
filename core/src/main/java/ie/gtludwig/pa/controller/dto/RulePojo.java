@@ -1,6 +1,7 @@
 package ie.gtludwig.pa.controller.dto;
 
 import ie.gtludwig.pa.model.Axis;
+import ie.gtludwig.pa.model.Project;
 
 public class RulePojo {
 
@@ -11,6 +12,8 @@ public class RulePojo {
     private String description;
 
     private Axis axisOrGuideline;
+
+    private Project project;
 
     public String getId() {
         return id;
@@ -42,5 +45,13 @@ public class RulePojo {
 
     public void setAxisOrGuideline(Axis axisOrGuideline) {
         this.axisOrGuideline = axisOrGuideline;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

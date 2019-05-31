@@ -13,7 +13,8 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class BasePojo implements _IPojo {
-    	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "uuid")

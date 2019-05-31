@@ -4,11 +4,13 @@ public enum UserState {
 
     ACTIVE("user.status-active"),
     INACTIVE("user.status-inactive"),
+    INVITED("user.status-invited"),
+    SUGGESTED("user.status-suggested"),
     LOCKED("user.status-locked");
 
     private String state;
 
-    private UserState(final String state){
+    UserState(final String state) {
         this.state = state;
     }
 

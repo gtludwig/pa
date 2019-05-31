@@ -16,6 +16,8 @@
     });
 </script>
 <div layout:fragment="content" >
+    <br/>
+    <br/>
     <div class="container-fluid">
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
             <div class="col-md-auto col-lg-auto col-xl-auto">
@@ -74,8 +76,10 @@
                                         <a th:href="@{/project/axis/rule/list(axisId=${pojo.id})}" class="fa fa-search" th:title="#{rule.viewRules}" />
                                     </td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/project/axis/edit(ruleId=${pojo.id})}" class="fa fa-edit" th:title="#{gen.edit}" />
-                                        <a th:href="@{/project/axis/remove(ruleId=${pojo.id})}" class="fa fa-remove" th:title="#{gen.remove}" />
+                                        <a class="fa fa-edit" th:href="@{/project/axis/edit(axisId=${pojo.id})}"
+                                           th:title="#{gen.edit}"/>
+                                        <a class="fa fa-remove" th:href="@{/project/axis/remove(axisId=${pojo.id})}"
+                                           th:title="#{gen.remove}"/>
                                     </td>
                                 </tr>
                                 </tbody>

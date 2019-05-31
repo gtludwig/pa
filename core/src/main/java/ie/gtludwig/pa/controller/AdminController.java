@@ -3,6 +3,7 @@ package ie.gtludwig.pa.controller;
 import ie.gtludwig.pa.controller.dto.UserPojo;
 import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.service.UserService;
+import ie.gtludwig.pa.validation.EmailExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,22 @@ public class AdminController {
         return context.getMessage(message, params, Locale.US);
     }
 
+    @RequestMapping(value = "/welcome", method = RequestMethod.GET)
+    public String welcome(ModelMap modelMap) {
+        return "welcome";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(ModelMap modelMap, String error, String logout) {
+        if (error != null)
+            modelMap.addAttribute("error", "Your username and password is invalid.");
+
+        if (logout != null)
+            modelMap.addAttribute("message", "You have been logged out successfully.");
+
+        return "login";
+    }
+
     @RequestMapping(value ="/adminHome", method = RequestMethod.GET)
     public void adminHome(ModelMap modelMap) {
         modelMap.addAttribute("pojo", getPrincipal());
@@ -80,7 +97,10 @@ public class AdminController {
         lastAction = buildLastAction("createFail", new Object[] {entityType, pojo.getUsername()});
         try {
             userService.createUser(pojo.getUsername(), pojo.getEmail(), pojo.getPassword(), pojo.getFirstName(), pojo.getLastName(), pojo.getUserProfileSet());
-            lastAction = buildLastAction("createSuccess", new Object[] {entityType, pojo.getUsername()});
+            lastAction = buildLastAction("createSuccess", new Object[]{entityType, pojo.getUsername()});
+        } catch (EmailExistsException eee) {
+            logger.error(eee.getLocalizedMessage());
+            logger.error(eee.toString());
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(e.toString());

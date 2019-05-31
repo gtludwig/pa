@@ -16,6 +16,8 @@
     });
 </script>
 <div layout:fragment="content" >
+    <br/>
+    <br/>
     <div class="container-fluid">
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
             <div class="col-md-auto col-lg-auto col-xl-auto">
@@ -47,12 +49,13 @@
                                     <th th:text="#{project.analysisCounter}">analysisCounter</th>
                                     <th th:text="#{project.state}">state</th>
                                     <th th:text="#{project.numberOfAxis}">numberOfAxis</th>
+                                    <th th:text="#{project.specialists}">specialists</th>
                                     <th th:text="#{gen.actions}">actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:if="${pojoList.empty}">
-                                    <td colspan="9" th:text="#{gen.noItems}">No projects</td>
+                                    <td colspan="10" th:text="#{gen.noItems}">No projects</td>
                                 </tr>
                                 <tr th:each="pojo : ${pojoList}">
                                     <td style="text-align: center" th:text="${pojo.sponsor.username}" />
@@ -63,8 +66,13 @@
                                     <td style="text-align: center" th:text="${pojo.counter + ' / '  + pojo.ideal}" />
                                     <td style="text-align: center" th:text="#{${pojo.state}}" />
                                     <td th:text="${pojo.axisSet.size()}" />
+                                    <td>
+                                        <span th:text="${pojo.specialists.size()}"/>
+                                        <a class="fa fa-search" th:href="@{/project/specialists(id=${pojo.id})}"
+                                           th:title="#{project.showSpecialists}"/>
+                                    </td>
+
                                     <td style="text-align: center">
-                                        <!--                                        <a th:href="@{/}" th:text="#{project.showGuideline}" />-->
                                         <!--                                        <a th:href="@{/}" th:text="#{project.accessAnalysisArea}" />-->
 
                                         <a th:href="@{/project/axis/list(projectId=${pojo.id})}" th:text="#{project.accessAxes}" />

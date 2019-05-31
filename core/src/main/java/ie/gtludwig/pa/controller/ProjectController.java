@@ -1,5 +1,6 @@
 package ie.gtludwig.pa.controller;
 
+import ie.gtludwig.pa.controller.dto.ProjectPojo;
 import ie.gtludwig.pa.model.Project;
 import ie.gtludwig.pa.service.ProjectService;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -44,7 +47,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void listProjects(ModelMap modelMap, RedirectAttributes redirectAttributes) {
-        modelMap.addAttribute("pojoList", projectService.findAll());
+        modelMap.addAttribute("pojoList", populatePojoList(projectService.findAll()));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
@@ -54,7 +57,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String createProject(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") Project pojo, Errors errors, final RedirectAttributes redirectAttributes) {
+    public String createProject(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") ProjectPojo pojo, Errors errors, final RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
@@ -120,30 +123,30 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String editProject(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") Project project, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
+    public String editProject(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") ProjectPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
             }
-            modelMap.addAttribute("pojo", project);
-            return "project/edit?id=" + project.getId();
+            modelMap.addAttribute("pojo", pojo);
+            return "project/edit?id=" + pojo.getId();
         }
 
-        lastAction = buildLastAction("editFail", new Object[] {entityType, project.getName()});
+        lastAction = buildLastAction("editFail", new Object[]{entityType, pojo.getName()});
         try {
 
             projectService.updateProject(
-                    project.getId(),
-                    project.getSponsor().getId(),
-                    project.getEvaluationStart(),
-                    project.getEvaluationEnd(),
-                    project.getName(),
-                    project.getDescription(),
-                    project.getIdeal(),
-                    project.getState(),
-                    project.getAxisSet()
+                    pojo.getId(),
+                    pojo.getSponsor().getId(),
+                    pojo.getEvaluationStart(),
+                    pojo.getEvaluationEnd(),
+                    pojo.getName(),
+                    pojo.getDescription(),
+                    pojo.getIdeal(),
+                    pojo.getState(),
+                    pojo.getAxisSet()
             );
-            lastAction = buildLastAction("editSuccess", new Object[] {entityType, project.getName()});
+            lastAction = buildLastAction("editSuccess", new Object[]{entityType, pojo.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
         }
@@ -166,5 +169,109 @@ public class ProjectController {
         logger.info(lastAction);
         redirectAttributes.addFlashAttribute("lastAction", lastAction);
         return "redirect:list";
+    }
+
+    @RequestMapping(value = "/specialists", method = RequestMethod.GET)
+    public void listSpecialists(ModelMap modelMap, @RequestParam(value = "id") String id) {
+        ProjectPojo pojo = populatePojoFromEntity(projectService.findById(id));
+
+        modelMap.addAttribute("projectId", id);
+        modelMap.addAttribute("pojo", pojo);
+        modelMap.addAttribute("pojoList", projectService.findAllSpecialistUsersByProjectId(id));
+        modelMap.addAttribute("allSpecialists", projectService.findAllSpecialistUsers());
+    }
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "/addSpecialists", method = RequestMethod.POST)
+    public String addSpecialist(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") Project project, Errors errors, final RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            modelMap.addAttribute("pojo", project);
+            return "/specialists?id=" + project.getId();
+        }
+        lastAction = buildLastAction("editAttributeFail", new Object[]{"specialists list", entityType, project.getName()});
+        try {
+            projectService.updateProjectSpecialists(project);
+            lastAction = buildLastAction("editAttributeSuccess", new Object[]{"specialists list", entityType, project.getName()});
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            logger.error(e.toString());
+        }
+        logger.info(lastAction);
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:specialists?id=" + project.getId();
+    }
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "/inviteSpecialist", method = RequestMethod.POST)
+    public String inviteSpecialist(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") ProjectPojo pojo, Errors errors, final RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            modelMap.addAttribute("pojo", pojo);
+            return "/specialists?id=" + pojo.getId();
+        }
+        lastAction = buildLastAction("editAttributeFail", new Object[]{"invited specialists", entityType, pojo.getName()});
+        try {
+            projectService.inviteSpecialistToProject(pojo.getInviteeEmail(), pojo.getId());
+            lastAction = buildLastAction("editAttributeSuccess", new Object[]{"specialists list", entityType, pojo.getName()});
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            logger.error(e.toString());
+        }
+        logger.info(lastAction);
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:specialists?id=" + pojo.getId();
+    }
+
+    @RequestMapping(value = "/specialists/remove", method = RequestMethod.GET)
+    public String removeSpecialist(ModelMap modelMap,
+                                   @RequestParam(value = "projectId") String projectId,
+                                   @RequestParam(value = "specialistId") String specialistId,
+                                   final RedirectAttributes redirectAttributes) {
+        String specialist = "specialist " + projectService.findUserById(specialistId).getUsername();
+
+        lastAction = buildLastAction("removeAttributeFail", new Object[]{specialist, entityType, projectService.findById(projectId).getName()});
+        try {
+            projectService.removeProjectSpecialist(projectId, specialistId);
+            lastAction = buildLastAction("removeAttributeSuccess", new Object[]{specialist, entityType, projectService.findById(projectId).getName()});
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+        }
+        logger.info(lastAction);
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "redirect:/project/specialists?id=" + projectId;
+    }
+
+    private List<ProjectPojo> populatePojoList(List<Project> projectList) {
+        List<ProjectPojo> pojoList = new ArrayList<>();
+        for (Project project : projectList) {
+            pojoList.add(populatePojoFromEntity(project));
+        }
+        return pojoList;
+    }
+
+    private ProjectPojo populatePojoFromEntity(Project project) {
+        ProjectPojo pojo = new ProjectPojo();
+
+        pojo.setId(project.getId());
+        pojo.setCreator(project.getCreator());
+        pojo.setSponsor(project.getSponsor());
+        pojo.setCreationDate(project.getCreationDate());
+        pojo.setEvaluationStart(project.getEvaluationStart());
+        pojo.setEvaluationEnd(project.getEvaluationEnd());
+        pojo.setName(project.getName());
+        pojo.setDescription(project.getDescription());
+        pojo.setCounter(project.getCounter());
+        pojo.setIdeal(project.getIdeal());
+        pojo.setState(project.getState());
+        pojo.setGuidelineAxis(project.getGuidelineAxis());
+        pojo.setAxisSet(project.getAxisSet());
+        pojo.setSpecialists(project.getSpecialists());
+
+        return pojo;
     }
 }

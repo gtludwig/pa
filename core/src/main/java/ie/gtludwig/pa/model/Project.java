@@ -57,6 +57,13 @@ public class Project  extends BasePojo {
             inverseJoinColumns = @JoinColumn(name = "axisId"))
     private Set<Axis> axisSet;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(name = "pa_project2specialists",
+            joinColumns = @JoinColumn(name = "projectId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
+    private Set<User> specialists;
+
 //    @OneToMany(mappedBy = "project")
 //    private Set<Analysis> analysisSet;
 
@@ -173,7 +180,16 @@ public class Project  extends BasePojo {
     public void setAxisSet(Set<Axis> axisSet) {
         this.axisSet = axisSet;
     }
-//
+
+    public Set<User> getSpecialists() {
+        return specialists;
+    }
+
+    public void setSpecialists(Set<User> specialists) {
+        this.specialists = specialists;
+    }
+
+    //
 //    public Set<Analysis> getAnalysisSet() {
 //        return analysisSet;
 //    }

@@ -219,6 +219,22 @@ public class AxisServiceImpl implements AxisService {
     }
 
     @Override
+    public void updateAxis(String axisId, String description, boolean applicationDefault, boolean guideline, int numberOfRules) {
+        Axis axis = findById(axisId);
+
+//        axis.setOrdering(ordering);
+        axis.setDescription(description);
+        axis.setApplicationDefault(applicationDefault);
+        axis.setGuideline(guideline);
+        axis.setNumberOfRules(numberOfRules);
+
+
+        axis = axisJpaRepository.saveAndFlush(axis);
+
+        updateRuleSet(axis);
+    }
+
+    @Override
     public void updateAxis(String axisId, String projectId, String description, boolean applicationDefault, boolean guideline, int numberOfRules) {
         Axis axis = findById(axisId);
 
@@ -232,11 +248,9 @@ public class AxisServiceImpl implements AxisService {
         axis = axisJpaRepository.saveAndFlush(axis);
         updateRuleSet(axis);
 
-        if (projectId != null) {
-            Project project = findProjectByProjectId(projectId);
-            project.getAxisSet().add(axis);
-            projectService.save(project);
-        }
+        Project project = findProjectByProjectId(projectId);
+        project.getAxisSet().add(axis);
+        projectService.save(project);
     }
 
     @Override

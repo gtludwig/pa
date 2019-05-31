@@ -35,6 +35,10 @@ public class ProjectPojo {
 
     private Set<Axis> axisSet;
 
+    private Set<User> specialists;
+
+    private String inviteeEmail;
+
     public String getId() {
         return id;
     }
@@ -137,5 +141,21 @@ public class ProjectPojo {
 
     public void setAxisSet(Set<Axis> axisSet) {
         this.axisSet = axisSet;
+    }
+
+    public Set<User> getSpecialists() {
+        return specialists;
+    }
+
+    public void setSpecialists(Set<User> specialists) {
+        this.specialists = specialists;
+    }
+
+    public String getInviteeEmail() {
+        return inviteeEmail;
+    }
+
+    public void setInviteeEmail(String inviteeEmail) {
+        this.inviteeEmail = inviteeEmail;
     }
 }

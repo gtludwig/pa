@@ -82,7 +82,7 @@ public class AxisController {
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createAxis(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") AxisPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
-        String projectId = pojo.getProject().getId() != null ? pojo.getProject().getId() : null;
+        String projectId = pojo.getProject().getId();
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
@@ -111,30 +111,36 @@ public class AxisController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public void editAxis(ModelMap modelMap, @RequestParam(value = "id") String axisId) {
-        modelMap.addAttribute("pojoList", populatePojoFromEntity(axisService.findById(axisId)));
+    public void editAxis(ModelMap modelMap, @RequestParam(value = "axisId") String axisId) {
+        modelMap.addAttribute("pojo", populatePojoFromEntity(axisService.findById(axisId)));
     }
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editAxis(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") AxisPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
-        String projectId = pojo.getProject().getId() != null ? pojo.getProject().getId() : null;
         if (errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
             }
-            if (projectId != null) {
+            if (pojo.getProject().getId() != null) {
                 modelMap.addAttribute("projectId", pojo.getProject().getId());
-                pojo.setProject(axisService.findProjectByProjectId(projectId));
+                pojo.setProject(axisService.findProjectByProjectId(pojo.getProject().getId()));
             }
             modelMap.addAttribute("pojo", pojo);
             return "project/axis/edit?id=" + pojo.getId();
         }
+
         lastAction = buildLastAction("editFail", new Object[] {entityType, pojo.getDescription()});
 
         try {
-            axisService.updateAxis(pojo.getId(), projectId, pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
-            lastAction = buildLastAction("createSuccess", new Object[] {entityType, pojo.getDescription()});
+            if (pojo.getProject() == null) {
+                axisService.updateAxis(pojo.getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+            } else {
+                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+            }
+            lastAction = buildLastAction("editSuccess", new Object[]{entityType, pojo.getDescription()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(e.toString());
@@ -142,14 +148,18 @@ public class AxisController {
         logger.info(lastAction);
         redirectAttributes.addFlashAttribute("lastAction", lastAction);
 
-        return projectId != null ? "redirect:list?projectId=" + projectId : "redirect:list";
+        if (pojo.getProject() == null) {
+            return "redirect:list";
+        } else {
+            return "redirect:list?projectId" + pojo.getProject().getId();
+        }
     }
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     public String remove(ModelMap modelMap, @RequestParam(value = "id") String id, final RedirectAttributes redirectAttributes) {
         AxisPojo pojo = populatePojoFromEntity(axisService.findById(id));
-        String projectId = pojo.getProject().getId() != null ? pojo.getProject().getId() : null;
+        String projectId = pojo.getProject().getId();
 
         lastAction = buildLastAction("removeFail", new Object[] {entityType, pojo.getDescription()});
         try {

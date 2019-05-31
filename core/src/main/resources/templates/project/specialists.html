@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{fragments/default}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#specialistsTable').DataTable({
+            fixedHeader: true
+        });
+
+        $('#selectedSpecialists').multiSelect({});
+        // selectableHeader: "<div class='custom-header'>Selectable items</div>",
+        // selectionHeader: "<div class='custom-header'>Selection items</div>",
+        // selectableFooter: "<div class='custom-header'>Selectable footer</div>",
+        // selectionFooter: "<div class='custom-header'>Selection footer</div>"
+        // });
+    });
+</script>
+<div layout:fragment="content">
+    <br/>
+    <br/>
+    <div class="container-fluid">
+        <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
+            <div class="col-md-auto col-lg-auto col-xl-auto">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="card-title">
+                            <h4><span th:text="#{project.viewSpecialists}">projectsSpecialists</span></h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <th:block th:if="${lastAction != null}">
+                            <div th:replace="~{fragments/message :: message}"/>
+                        </th:block>
+
+                        <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')">
+                            <a data-target="modal-addSpecialist" data-toggle="modal"
+                               th:attr="data-target='#modal-addSpecialist'+${projectId}">
+                                <span class="btn btn-outline-primary" th:text="#{project.addSpecialist}"/>
+                            </a>
+                            <!--                            <button id="addSpecialist" class="btn btn-success btn-pill float-lg-right" data-target="modal-success" data-toggle="modal" th:text="#{project.addSpecialist}">addSpecialist</button>-->
+                            <!--                            <a th:href="@{/project/specialist/add}">-->
+                            <!--                            </a>-->
+                            <a data-target="modal-inviteSpecialist" data-toggle="modal"
+                               th:attr="data-target='#modal-inviteSpecialist'+${projectId}">
+                                <span class="btn btn-outline-primary" th:text="#{project.inviteSpecialist}">inviteSpecialist</span>
+                            </a>
+                        </th:block>
+                        <div class="dataTables_wrapper form-inline" id="searchable_wrapper" role="grid">
+                            <table aria-describedby="searcheable_info"
+                                   class="table table-bordered table-hover table-responsive table-striped dataTable"
+                                   id="userTable">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{user.username}"/>
+                                    <th th:text="#{user.email}"/>
+                                    <th th:text="#{user.fullName}"/>
+                                    <th th:text="#{user.state}"/>
+                                    <th sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')"
+                                        th:text="#{gen.actions}"/>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${pojoList.empty}">
+                                    <td colspan="6" th:text="#{gen.noItems}">No Axis</td>
+                                </tr>
+                                <tr th:each="pojo : ${pojoList}">
+                                    <td th:text="${pojo.username}"/>
+                                    <td th:text="${pojo.email}"/>
+                                    <td th:text="${pojo.firstName + ' ' + pojo.lastName}"/>
+                                    <td style="text-align: center" th:text="#{${pojo.state}}"/>
+                                    <td sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')"
+                                        style="text-align: center">
+                                        <a class="fa fa-thumbs-up"
+                                           th:href="@{/project/specialists/approve(userId=${pojo.id})}"
+                                           th:title="#{gen.approve}"/>
+                                        <a class="fa fa-remove"
+                                           th:href="@{/project/specialists/remove(projectId=${projectId},specialistId=${pojo.id})}"
+                                           th:title="#{gen.remove}"/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade in" role="dialog" th:id="modal-addSpecialist+${projectId}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label th:for="specialists" th:text="#{project.specialists}"/>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" method="post" role="form" th:action="@{/project/addSpecialists}"
+                          th:object="${pojo}">
+                        <div hidden="false" id="projectInfo">
+                            <input id="projectId" th:value="${projectId}" type="text">
+                        </div>
+                        <select class="form-control" id="selectedSpecialists" multiple="multiple"
+                                th:field="*{specialists}">
+                            <option th:each="specialist : ${allSpecialists}"
+                                    th:text="${specialist.firstName + ' ' + specialist.lastName + ' <' + specialist.email + '>'}"
+                                    th:value="${specialist.id}">
+                            </option>
+                        </select>
+                        <div class="modal-footer" id="controls">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-success btn-pill" id="submitButton" th:text="#{gen.submit}"
+                                    type="submit">Submit
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" role="dialog" th:id="modal-inviteSpecialist+${projectId}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label th:for="specialists" th:text="#{project.specialists}"/>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" method="post" role="form" th:action="@{/project/inviteSpecialist}"
+                          th:object="${pojo}">
+                        <div hidden="false" id="projectInfo">
+                            <input id="projectId" th:value="${projectId}" type="text">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-6">
+                                <label th:for="email" th:text="#{user.email}"/>
+                                <input class="form-control" id="email" th:field="*{inviteeEmail}" type="email">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer" id="controls">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-success btn-pill" id="submitButton" th:text="#{gen.submit}"
+                                    type="submit">Submit
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

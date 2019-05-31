@@ -2,9 +2,11 @@ package ie.gtludwig.pa.controller.dto;
 
 import ie.gtludwig.pa.model.UserProfile;
 import ie.gtludwig.pa.model.UserState;
+import ie.gtludwig.pa.validation.PasswordMatches;
 
 import java.util.Set;
 
+@PasswordMatches
 public class UserPojo {
 
     private String id;

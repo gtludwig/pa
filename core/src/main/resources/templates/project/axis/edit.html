@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
@@ -51,12 +50,21 @@
                             <div id="booleans" class="form-group row">
 
                                 <div id="applicationDefaultDiv" class="col-lg-6">
-                                    <label th:for="applicationDefault" th:text="#{axis.applicationDefault}">description</label>
-                                    <input id="applicationDefault" type="checkbox" th:field="*{applicationDefault}">
+                                    <div class="custom-control custom-switch">
+                                        <input class="custom-control-input" id="applicationDefault"
+                                               th:field="*{applicationDefault}" type="checkbox">
+                                        <label class="custom-control-label" th:for="applicationDefault"
+                                               th:text="#{axis.applicationDefault}">description</label>
+                                    </div>
                                 </div>
                                 <div id="guidelineDiv" class="col-lg-6">
-                                    <label th:for="toggle-guideline" th:text="#{axis.guideline}">name</label>
-                                    <input id="guideline" type="checkbox" th:name="toggle-guideline" th:field="*{guideline}">
+                                    <div class="custom-control custom-switch">
+                                        <input class="custom-control-input" id="guideline" th:field="*{guideline}"
+                                               type="checkbox">
+                                        <label class="custom-control-label" th:for="guideline"
+                                               th:text="#{axis.guideline}">name</label>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -76,9 +84,18 @@
 
                             <div id="controls">
                                 <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
-                                <a th:href="@{/project/list}">
-                                    <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
-                                </a>
+
+                                <th:block th:if="${projectId == null}">
+                                    <a th:href="@{/project/axis/list}">
+                                        <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${projectId != null}">
+                                    <a th:href="@{/project/axis/list(projectId=${projectId})}">
+                                        <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
+                                    </a>
+                                </th:block>
+
                             </div>
                         </form>
                     </div>

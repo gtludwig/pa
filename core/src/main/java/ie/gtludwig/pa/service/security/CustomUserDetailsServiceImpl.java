@@ -14,7 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Service(value = "customUserDetailsService")
@@ -32,15 +33,20 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
         User user = userService.findByEmail(email);
         if (user == null) {
             logger.error("User with email" + email + " not found.");
-            throw new UsernameNotFoundException("Oops! User not found with emailç: " + email);
+            throw new UsernameNotFoundException("Oops! User not found with email: " + email);
         } else {
 
+            boolean enabled = true;
+            boolean accountNonExpired = true;
+            boolean credentialsNonExpired = true;
+            boolean accountNonLocked = true;
             Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
             for (UserProfile userProfile : user.getUserProfileSet()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
             }
             logger.info("User with email {} successfully logged", user.getEmail());
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), enabled, accountNonExpired,
+                    credentialsNonExpired, accountNonLocked, grantedAuthorities);
         }
     }
 }

@@ -27,6 +27,8 @@ public interface AxisService extends CrudService<Axis> {
 
     void createAxis(String projectId, String description, boolean applicationDefault, boolean guideline, int numberOfRules);
 
+    void updateAxis(String axisId, String description, boolean applicationDefault, boolean guideline, int numberOfRules);
+
     void updateAxis(String axisId, String projectId, String description, boolean applicationDefault, boolean guideline, int numberOfRules);
 
     Project findProjectByProjectId(String projectId);

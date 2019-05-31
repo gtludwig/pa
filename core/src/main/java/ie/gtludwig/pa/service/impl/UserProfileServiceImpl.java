@@ -2,13 +2,16 @@ package ie.gtludwig.pa.service.impl;
 
 import ie.gtludwig.pa.dao.UserProfileJpaRepository;
 import ie.gtludwig.pa.model.UserProfile;
+import ie.gtludwig.pa.model.UserProfileType;
 import ie.gtludwig.pa.service.UserProfileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service(value = "userProfileService")
 public class UserProfileServiceImpl implements UserProfileService {
@@ -39,6 +42,21 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public List<UserProfile> findAllUserProfilesByUserId(String ssoId) {
         return null;
+    }
+
+    @Override
+    public Set<UserProfile> getSelfRegistrationUserProfileSet() {
+        Set<UserProfile> userProfileSet = new HashSet<>();
+        userProfileSet.add(findUserProfileByType(UserProfileType.USER.getUserProfileType()));
+        return userProfileSet;
+    }
+
+    @Override
+    public Set<UserProfile> getInvitedSpecialistUserProfileSet() {
+        Set<UserProfile> userProfileSet = new HashSet<>();
+        userProfileSet.add(findUserProfileByType(UserProfileType.USER.getUserProfileType()));
+        userProfileSet.add(findUserProfileByType(UserProfileType.SPECIALIST.getUserProfileType()));
+        return userProfileSet;
     }
 
     @Override

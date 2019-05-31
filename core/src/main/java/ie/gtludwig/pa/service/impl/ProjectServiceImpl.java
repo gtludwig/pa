@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service(value = "projectService")
 public class ProjectServiceImpl implements ProjectService {
@@ -46,6 +47,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public User findUserByEmail(String email) {
         return userService.findByEmail(email);
+    }
+
+    @Override
+    public User findUserById(String userId) {
+        return userService.findById(userId);
     }
 
     @Override
@@ -86,7 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     protected Project saveAndFlush(Project project) {
-        boolean isNew = project.getId() == null ? true : false;
+        boolean isNew = project.getId() == null;
 
         try {
             project = projectJpaRepository.saveAndFlush(project);
@@ -169,5 +175,54 @@ public class ProjectServiceImpl implements ProjectService {
         Project p1 = projectJpaRepository.findByGuidelineAxisEquals(axis);
         Project p2 = projectJpaRepository.findByAxisSetContains(axis);
         return p1 != null ? p1 : p2;
+    }
+
+    @Override
+    public List<User> findAllSpecialistUsers() {
+        return userService.findAllByUserProfileType(UserProfileType.SPECIALIST);
+    }
+
+    @Override
+    public List<User> findAllSpecialistUsersByProjectId(String projectId) {
+        return findById(projectId).getSpecialists().stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public void inviteSpecialistToProject(String email, String projectId) {
+        System.out.println("projectId: " + projectId + " | " + email);
+//        try {
+//
+//            userService.createUser("specialist", email, "abc1234", "Invited", "Specialist", userService.getInvitedSpecialistUserProfileSet());
+//        } catch (EmailExistsException e) {
+//            logger.error(e.getLocalizedMessage());
+//        }
+//        User specialist = userService.findByEmail(email);
+//
+//        Project project = findById(projectId);
+//
+//        project.getSpecialists().add(specialist);
+//
+//        save(project);
+    }
+
+    @Override
+    public void updateProjectSpecialists(Project project) {
+        Set<User> persistedSpecialists = findById(project.getId()).getSpecialists();
+
+        if (!persistedSpecialists.equals(project.getSpecialists())) {
+            save(project);
+        }
+    }
+
+    @Override
+    public void removeProjectSpecialist(String projectId, String specialistId) {
+        Project project = findById(projectId);
+        User specialist = userService.findById(specialistId);
+
+        if (project.getSpecialists().contains(specialist)) {
+            project.getSpecialists().remove(specialist);
+            save(project);
+        }
+
     }
 }

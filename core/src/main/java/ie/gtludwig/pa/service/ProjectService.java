@@ -1,6 +1,9 @@
 package ie.gtludwig.pa.service;
 
-import ie.gtludwig.pa.model.*;
+import ie.gtludwig.pa.model.Axis;
+import ie.gtludwig.pa.model.Project;
+import ie.gtludwig.pa.model.ProjectState;
+import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.service.generic.CrudService;
 
 import java.time.LocalDateTime;
@@ -22,8 +25,23 @@ public interface ProjectService extends CrudService<Project> {
 
     User findUserByEmail(String email);
 
+    User findUserById(String userId);
+
     List<User> findAllSponsorUsers();
 
+    List<User> findAllSpecialistUsers();
+
+    List<User> findAllSpecialistUsersByProjectId(String projectId);
+
+
+
+
     Project findByGuidelineAxisEqualsOrAxisSet(Axis axis);
+
+    void inviteSpecialistToProject(String email, String projectId);
+
+    void updateProjectSpecialists(Project project);
+
+    void removeProjectSpecialist(String projectId, String specialistId);
 
 }

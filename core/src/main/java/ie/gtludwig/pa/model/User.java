@@ -7,6 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -39,6 +40,9 @@ public class User extends BasePojo {
     @Column(name = "lastName", nullable = false)
     private String lastName;
 
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
     @NotEmpty
     @Column(name = "state", nullable = false)
     private String state = UserState.ACTIVE.getState();
@@ -49,6 +53,12 @@ public class User extends BasePojo {
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "userProfileId"))
     private Set<UserProfile> userProfileSet;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "pa_users_roles",
+            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     public String getUsername() {
         return username;
@@ -98,6 +108,14 @@ public class User extends BasePojo {
         this.lastName = lastName;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public String getState() {
         return state;
     }
@@ -112,5 +130,13 @@ public class User extends BasePojo {
 
     public void setUserProfileSet(Set<UserProfile> userProfileSet) {
         this.userProfileSet = userProfileSet;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 }

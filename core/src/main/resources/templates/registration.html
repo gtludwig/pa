@@ -5,9 +5,41 @@
     <title>Title</title>
 </head>
 <body>
+<script type="text/javascript">
+    var serverContext = [[;@{
+        /}]];;;
+
+        function register() {
+            $(".alert").html("").hide();
+            var formData = $('form').serialize();
+            $.post(serverContext + "/user/registration", formData, function (data) {
+                if (data.message == "success") {
+                    window.location.href = serverContext + "/successRegister.html";
+                }
+            })
+                .fail(function (data) {
+                    if (data.responseJSON.error.indexOf("MailError") > -1) {
+                        window.location.href = serverContext + "/emailError.html";
+                    } else if (data.responseJSON.error.indexOf("InternalError") > -1) {
+                        window.location.href = serverContext +
+                            "/login.html?message=" + data.responseJSON.message;
+                    } else if (data.responseJSON.error == "UserAlreadyExist") {
+                        $("#emailError").show().html(data.responseJSON.message);
+                    } else {
+                        var errors = $.parseJSON(data.responseJSON.message);
+                        $.each(errors, function (index, item) {
+                            $("#" + item.field + "Error").show().html(item.defaultMessage);
+                        });
+                        errors = $.parseJSON(data.responseJSON.error);
+                        $.each(errors, function (index, item) {
+                            $("#globalError").show().append(item.defaultMessage + "<br>");
+                        });
+                    }
+                });
+</script>
 <div class="container">
     <div class="text-center" >
-        <form class="form-signin" action="/" th:object="${user}" method="POST" enctype="utf8">
+        <form action="/" class="form-signin" enctype="utf8" method="POST" th:object="${pojo}">
             <div class="h3 mb-3 font-weight-normal">
                 <span th:text="#{user.registration}">form</span>
             </div>
@@ -40,7 +72,8 @@
                 <label class="sr-only" th:text="#{user.passwordConfirm}">confirm</label>
                 <input type="password" class="form-control" th:placeholder="#{user.passwordConfirm}" th:field="*{passwordConfirm}"/>
             </div>
-            <button type="submit" th:text="#{gen.submit}">submit</button>
+            <!--            <button type="submit" th:text="#{gen.submit}">submit</button>-->
+            <a href="#" onclick="register()" th:text="#{gen.submit}">submit</a>
         </form>
 <!--        <a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>-->
     </div>

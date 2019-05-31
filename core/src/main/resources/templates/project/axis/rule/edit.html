@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +8,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <br/>
+    <br/>
     <div class="container-fluid">
         <div class="row justify-content-md-center justify-content-lg-center justify-content-xl-center">
             <div class="col-md-auto col-lg-auto col-xl-auto">
@@ -19,11 +19,12 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                         <div class="card-title">
-                            <h4><span th:text="#{project.creation}">project.creation</span></h4>
+                            <h4><span th:text="#{rule.edit}">project.creation</span></h4>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form role="form" action="#" th:action="@{/project/axis/rule}" th:object="${pojo}" method="post">
+                        <form action="#" method="post" role="form" th:action="@{/project/axis/rule/edit}"
+                              th:object="${pojo}">
                             <div th:id="project" >
                                 <div th:hidden="true" th:for="idDiv">
                                     <input type="text" id="idDiv" th:value="*{id}" th:readonly="true">
@@ -31,20 +32,23 @@
                                 </div>
                             </div>
 
-                            <div th:id="ruleDetails" class="form-group row">
-                                <div class="col-lg-6">
-                                    <label th:for="axisOrGuideline" th:text="#{rule.createAxisOrGuideline}">name</label>
-                                    <input type="text" class="form-control" id="axisOrGuideline" th:field="*{axisOrGuideline.id}" readonly>
+                            <div class="form-group" th:id="ruleDetails">
+                                <div class="row">
+                                    <label th:for="axisOrGuideline" th:text="#{rule.editAxisOrGuideline}">name</label>
+                                    <input class="form-control" id="axisOrGuideline" readonly
+                                           th:field="*{axisOrGuideline.description}" type="text">
                                 </div>
-                                <div class="col-lg-6">
+                                <br/>
+                                <div class="row">
                                     <label th:for="description" th:text="#{gen.description}">description</label>
-                                    <input type="text" class="form-control" id="description" th:field="*{description}">
+                                    <textarea class="form-control" id="description" required
+                                              th:field="*{description}"></textarea>
                                 </div>
                             </div>
 
                             <div id="controls">
                                 <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
-                                <a th:href="@{/project/axis/rule/list(axisId=*{axisOrGuideline.id})}"></a>
+                                <a th:href="@{/project/axis/rule/list(axisId=${axisId})}"></a>
                                 <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
                                 </a>
                             </div>

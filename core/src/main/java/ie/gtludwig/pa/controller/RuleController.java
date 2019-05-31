@@ -46,10 +46,11 @@ public class RuleController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void listRules(ModelMap modelMap, @RequestParam(value = "axisId") String axisId, RedirectAttributes redirectAttributes) {
+        String projectId = ruleService.findProjectByAxisId(axisId) == null ? "" : ruleService.findProjectByAxisId(axisId).getId();
         Axis axis = ruleService.findAxisByAxisId(axisId);
 
         modelMap.addAttribute("axisId", axis.getId());
-        modelMap.addAttribute("projectId", ruleService.findProjectByAxisId(axis.getId()).getId());
+        modelMap.addAttribute("projectId", projectId);
         modelMap.addAttribute("pojoList", populatePojoList(ruleService.findAllFromAxisByAxisId(axisId)));
     }
 
@@ -93,7 +94,7 @@ public class RuleController {
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public void editRule(ModelMap modelMap, @RequestParam(value = "ruleId") String ruleId) {
         RulePojo pojo = populatePojoFromEntity(ruleService.findById(ruleId));
-//        modelMap.addAttribute("axisId", pojo.getAxisOrGuideline().getId());
+        modelMap.addAttribute("axisId", pojo.getAxisOrGuideline().getId());
         modelMap.addAttribute("pojo", pojo);
     }
 
@@ -113,7 +114,7 @@ public class RuleController {
         lastAction = buildLastAction("editFail", new Object[] {entityType, errors.getAllErrors().toString()});
         try {
             ruleService.updateRule(pojo.getId(), pojo.getDescription());
-            lastAction = buildLastAction("editSuccess", new Object[] {entityType, errors.getAllErrors().toString()});
+            lastAction = buildLastAction("editSuccess", new Object[]{entityType, pojo.getDescription()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(e.toString());
@@ -156,6 +157,12 @@ public class RuleController {
         pojo.setOrdering(rule.getOrdering());
         pojo.setDescription(rule.getDescription());
         pojo.setAxisOrGuideline(ruleService.findAxisFromRule(rule));
+
+        if (pojo.getAxisOrGuideline().isApplicationDefault()) {
+            pojo.setProject(ruleService.findProjectByAxisId(pojo.getAxisOrGuideline().getId()));
+        } else {
+            pojo.setProject(null);
+        }
 
         return pojo;
     }
