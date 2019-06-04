@@ -35,17 +35,20 @@
 
                         <th:block th:if="${projectId == null}" sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
                             <a th:href="@{/project/axis/create}">
-                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{axis.addDefaultAxis}">addDefaultAxis</button>
+                                <button class="btn btn-outline-primary" th:text="#{axis.addDefaultAxis}">
+                                    addDefaultAxis
+                                </button>
                             </a>
                         </th:block>
 
                         <th:block th:if="${projectId != null}" sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
                             <div class="">
                                 <a th:href="@{/project/axis/create(projectId=${projectId})}">
-                                    <button class="btn btn-success " th:text="#{axis.addAxis}">addAxis</button>
+                                    <button class="btn btn-outline-primary " th:text="#{axis.addAxis}">addAxis</button>
                                 </a>
                                 <a th:href="@{/project/list}">
-                                    <button class="btn btn-secondary" th:text="#{gen.returnProject}">addAxis</button>
+                                    <button class="btn btn-outline-secondary" th:text="#{gen.returnProject}">addAxis
+                                    </button>
                                 </a>
                             </div>
 

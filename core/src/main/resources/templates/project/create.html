@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
@@ -53,13 +52,14 @@
                                             <option th:each="sponsor : ${sponsors}"
                                                     th:value="${sponsor.id}"
                                                     th:selected="${sponsors.contains(sponsor)}"
-                                                    th:text="${sponsor.username}">
+                                                    th:text="${sponsor.firstName + ' ' + sponsor.lastName}">
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6" th:hidden="true">
                                         <label th:for="creatorId" th:text="#{project.creator}">creator</label>
-                                        <input type="text" class="form-control" id="creatorId" th:value="*{creator.getUsername()}" readonly>
+                                        <input class="form-control" id="creatorId" readonly
+                                               th:value="*{creator.firstName + ' ' + creator.lastName}" type="text">
                                     </div>
                                 </div>
 
@@ -78,23 +78,24 @@
 
                             <br />
                             <div id="details" class="form-group row">
-                                <div id="nameDiv" class="col-lg-6">
+                                <div class="col-lg-12" id="nameDiv">
                                     <label th:for="name" th:text="#{project.name}">name</label>
                                     <input type="text" class="form-control" id="name" th:field="*{name}" required>
                                 </div>
 
-                                <div id="descriptionDiv" class="col-lg-6">
+                                <div class="col-lg-12" id="descriptionDiv">
                                     <label th:for="description" th:text="#{project.description}">description</label>
-                                    <input type="text" class="form-control" id="description" th:field="*{description}">
+                                    <textarea class="form-control" id="description" th:field="*{description}"
+                                              type="textarea"> </textarea>
                                 </div>
                             </div>
 
                             <div id="expandedDetails" class="form-group row">
-                                <div class="col-lg-3">
+                                <div class="col-lg-6">
                                     <label th:for="ideal" th:text="#{project.ideal}">ideal</label>
                                     <input type="number" class="form-control" id="ideal" th:field="*{ideal}">
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-6">
                                     <label th:for="status" th:text="#{project.projectState}">projectState</label>
                                     <select id="status" class="form-control custom-select" th:field="*{state}">
                                         <option th:each="state : ${T(ie.gtludwig.pa.model.ProjectState).values()}"
@@ -104,10 +105,13 @@
                                         </option>
                                     </select>
                                 </div>
+                            </div>
 
-                                <div class="col-lg-6">
+                            <div class="form-group row" id="guidelineDiv">
+                                <div class="col-lg-12">
                                     <label th:for="guidelineId" th:text="#{project.selectGuideline}">selectGuideline</label>
-                                    <select id="guidelineId" class="form-control custom-select" th:field="*{guideline}">
+                                    <select class="form-control custom-select" id="guidelineId"
+                                            th:field="*{guidelineAxis}">
                                         <option th:each="guideline : ${guidelines}"
                                                 th:value="${guideline}"
                                                 th:selected="${guidelines.contains(guideline)}"

@@ -41,7 +41,7 @@
                             <table id="userTable" class="table table-bordered table-hover table-responsive table-striped dataTable" aria-describedby="searcheable_info" >
                                 <thead>
                                 <tr>
-                                    <th th:text="#{user.username}" />
+                                    <!--                                    <th th:text="#{user.username}" />-->
                                     <th th:text="#{user.email}" />
                                     <th th:text="#{user.fullName}" />
                                     <th th:text="#{user.state}" />
@@ -51,7 +51,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="pojo : ${pojoList}">
-                                    <td th:text="${pojo.username}" />
+                                    <!--                                    <td th:text="${pojo.username}" />-->
                                     <td th:text="${pojo.email}" />
                                     <td th:text="${pojo.firstName + ' ' + pojo.lastName}" />
                                     <td style="text-align: center" th:text="#{${pojo.state}}" />

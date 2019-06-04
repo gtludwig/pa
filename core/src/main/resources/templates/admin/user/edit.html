@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      layout:decorate="~{fragments/default}" >
+      layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -19,21 +18,32 @@
             }
         });
 
-        $('#selectedProfiles').bootstrapDualListbox({
-            filterTextClear: 'show all',
-            filterPlaceHolder: 'Filter',
-            moveSelectedLabel: 'Move Selected',
-            moveAllLabel: "Add All",
-            removeSelectedLabel: 'Remove Selected',
-            removeAllLabel: "Remove All",
-            moveOnSelect: true,
-            showFilterInputs: false,
-            infoText: false,
-            btnMoveText: 'Add',
-            btnMoveAllText: 'Add All',
-            btnRemoveText: 'Remove',
-            btnRemoveAllText: 'Remove All',
+        $(":password").keyup(function () {
+            if ($("#password").val() != $("#passwordConfirm").val()) {
+                $("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+            } else {
+                $("#globalError").html("").hide();
+            }
         });
+
+        options = {
+            common: {minChar: 8},
+            ui: {
+                showVerdictsInsideProgressBar: true,
+                showErrors: true,
+                errorMessages: {
+                    wordLength: /*[[#{error.wordLength}]]*/,
+                    wordNotEmail: /*[[#{error.wordNotEmail}]]*/,
+                    wordSequences: /*[[#{error.wordSequences}]]*/,
+                    wordLowercase: /*[[#{error.wordLowercase}]]*/,
+                    wordUppercase: /*[[#{error.wordUppercase}]]*/,
+                    wordOneNumber: /*[[#{error.wordOneNumber}]]*/,
+                    wordOneSpecialChar: /*[[#{error.wordOneSpecialChar}]]*/
+                }
+            }
+        };
+        $('#password').pwstrength(options);
+
     });
 </script>
 <div layout:fragment="content">
@@ -59,14 +69,10 @@
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-lg-6">
-                                    <label th:for="username" th:text="#{user.username}" />
-                                    <input type="text" class="form-control" id="username" th:field="*{username}">
-                                </div>
-
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <label th:for="email" th:text="#{user.email}" />
-                                    <input type="text" class="form-control" id="email" th:field="*{email}">
+                                    <input class="form-control" id="email" th:field="*{email}" th:readonly="true"
+                                           type="text"/>
                                 </div>
                             </div>
 
@@ -82,17 +88,26 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-lg-6">
-                                    <label th:for="password" th:text="#{user.password}" />
-                                    <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                                </div>
+                            <th:block th:if="*{accountOwner}">
+                                <div class="form-group row">
+                                    <div class="col-lg-6">
+                                        <label th:for="password" th:text="#{user.password}"/>
+                                        <input class="form-control" id="password" required th:field="*{password}"
+                                               type="password">
+                                        <span class="alert alert-danger col-sm-4" id="passwordError"
+                                              style="display:none"></span>
+                                    </div>
 
-                                <div class="col-lg-6">
-                                    <label th:for="passwordConfirm" th:text="#{user.passwordConfirm}" />
-                                    <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
+                                    <div class="col-lg-6">
+                                        <label th:for="passwordConfirm" th:text="#{user.passwordConfirm}"/>
+                                        <input class="form-control" id="passwordConfirm" required
+                                               th:field="*{passwordConfirm}" type="password">
+                                        <span class="alert alert-danger col-sm-4" id="globalError"
+                                              style="display:none"></span>
+                                    </div>
                                 </div>
-                            </div>
+                            </th:block>
+
 
                             <div class="form-group row justify-content-md-center justify-content-lg-center justify-content-xl-center">
                                 <div class="col-md-12 col-lg-12 col-xl-12">
@@ -108,9 +123,11 @@
                             </div>
 
                             <div id="controls">
-                                <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>
+                                <button class="btn btn-outline-primary" id="submitButton" th:text="#{gen.submit}"
+                                        type="submit">Submit
+                                </button>
                                 <a th:href="@{/admin/user/list}">
-                                    <span class="btn btn-warning" th:text="#{gen.cancel}">Cancel</span>
+                                    <span class="btn btn-outline-secondary" th:text="#{gen.cancel}">Cancel</span>
                                 </a>
                             </div>
                         </form>

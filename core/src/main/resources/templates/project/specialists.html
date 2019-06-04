@@ -44,9 +44,6 @@
                                th:attr="data-target='#modal-addSpecialist'+${projectId}">
                                 <span class="btn btn-outline-primary" th:text="#{project.addSpecialist}"/>
                             </a>
-                            <!--                            <button id="addSpecialist" class="btn btn-success btn-pill float-lg-right" data-target="modal-success" data-toggle="modal" th:text="#{project.addSpecialist}">addSpecialist</button>-->
-                            <!--                            <a th:href="@{/project/specialist/add}">-->
-                            <!--                            </a>-->
                             <a data-target="modal-inviteSpecialist" data-toggle="modal"
                                th:attr="data-target='#modal-inviteSpecialist'+${projectId}">
                                 <span class="btn btn-outline-primary" th:text="#{project.inviteSpecialist}">inviteSpecialist</span>
@@ -58,7 +55,7 @@
                                    id="userTable">
                                 <thead>
                                 <tr>
-                                    <th th:text="#{user.username}"/>
+                                    <!--                                    <th th:text="#{user.username}"/>-->
                                     <th th:text="#{user.email}"/>
                                     <th th:text="#{user.fullName}"/>
                                     <th th:text="#{user.state}"/>
@@ -71,7 +68,7 @@
                                     <td colspan="6" th:text="#{gen.noItems}">No Axis</td>
                                 </tr>
                                 <tr th:each="pojo : ${pojoList}">
-                                    <td th:text="${pojo.username}"/>
+                                    <!--                                    <td th:text="${pojo.username}"/>-->
                                     <td th:text="${pojo.email}"/>
                                     <td th:text="${pojo.firstName + ' ' + pojo.lastName}"/>
                                     <td style="text-align: center" th:text="#{${pojo.state}}"/>

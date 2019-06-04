@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
@@ -53,7 +52,7 @@
                                             <option th:each="sponsor : ${sponsors}"
                                                     th:value="${sponsor.id}"
                                                     th:selected="${sponsors.contains(sponsor)}"
-                                                    th:text="${sponsor.username}">
+                                                    th:text="${sponsor.firstName + ' ' sponsor.lastName}">
                                             </option>
                                         </select>
                                     </div>

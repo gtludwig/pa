@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      layout:decorate="~{fragments/default}" >
+      layout:decorate="~{fragments/default}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -59,10 +58,10 @@
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-lg-6">
-                                    <label th:for="username" th:text="#{user.username}" />
-                                    <input type="text" class="form-control" id="username" th:field="*{username}">
-                                </div>
+                                <!--                                <div class="col-lg-6">-->
+                                <!--                                    <label th:for="username" th:text="#{user.username}" />-->
+                                <!--                                    <input type="text" class="form-control" id="username" th:field="*{username}">-->
+                                <!--                                </div>-->
 
                                 <div class="col-lg-6">
                                     <label th:for="email" th:text="#{user.email}" />

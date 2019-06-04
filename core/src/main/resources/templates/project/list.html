@@ -34,7 +34,7 @@
 
                         <th:block sec:authorize="hasAnyRole(''ROLE_SPONSOR'',''ROLE_ADMIN'')" >
                             <a th:href="@{/project/create}">
-                                <button class="btn btn-success btn-pill float-lg-right" th:text="#{gen.create}">create</button>
+                                <button class="btn btn-outline-primary" th:text="#{gen.create}">create</button>
                             </a>
                         </th:block>
                         <div id="searchable_wrapper" class="dataTables_wrapper form-inline" role="grid">
