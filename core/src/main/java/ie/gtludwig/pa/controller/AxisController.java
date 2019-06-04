@@ -71,10 +71,11 @@ public class AxisController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public void createAxis(ModelMap modelMap, @RequestParam(value = "projectId", required = false) String projectId, RedirectAttributes redirectAttributes) {
         AxisPojo pojo = new AxisPojo();
-
+        pojo.setApplicationDefault(true);
         if (projectId != null) {
             modelMap.addAttribute("projectId", projectId);
             pojo.setProject(axisService.findProjectByProjectId(projectId));
+            pojo.setApplicationDefault(false);
         }
         modelMap.addAttribute("pojo", pojo);
     }
@@ -82,7 +83,7 @@ public class AxisController {
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createAxis(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") AxisPojo pojo, BindingResult bindingResult, Errors errors, final RedirectAttributes redirectAttributes) {
-        String projectId = pojo.getProject().getId();
+        String projectId = pojo.getProject() == null ? null : pojo.getProject().getId();
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());

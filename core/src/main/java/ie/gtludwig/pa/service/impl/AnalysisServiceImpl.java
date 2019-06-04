@@ -33,7 +33,7 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
     public void save(Analysis pojo) {
-        logger.info("Saved analysis by user {} on {} with result of {}", pojo.getAnalyst().getUsername(), pojo.getEvaluationDate(), pojo.getResult());
+        logger.info("Saved analysis by user with email {} on {} with result of {}", pojo.getAnalyst().getEmail(), pojo.getEvaluationDate(), pojo.getResult());
         List<Analysis> previousAnalysisList = new ArrayList<>();
         for (Analysis analysis : previousAnalysisList) {
             analysis.setLatest(false);

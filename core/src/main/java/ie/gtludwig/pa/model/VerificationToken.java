@@ -2,15 +2,13 @@ package ie.gtludwig.pa.model;
 
 import ie.gtludwig.pa.model.generic.BasePojo;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
 @Entity
+@Table(name = "pa_verificationToken")
 public class VerificationToken extends BasePojo {
 
     private static final long serialVersionUID = 1L;

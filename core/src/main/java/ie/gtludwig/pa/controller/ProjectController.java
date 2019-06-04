@@ -2,6 +2,7 @@ package ie.gtludwig.pa.controller;
 
 import ie.gtludwig.pa.controller.dto.ProjectPojo;
 import ie.gtludwig.pa.model.Project;
+import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class ProjectController {
     public void createProject(ModelMap modelMap) {
         modelMap.addAttribute("pojo",  populateNewDefaultProject());
         modelMap.addAttribute("sponsors", projectService.findAllSponsorUsers());
+        modelMap.addAttribute("guidelines", projectService.findAllAxis(true));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -232,7 +234,8 @@ public class ProjectController {
                                    @RequestParam(value = "projectId") String projectId,
                                    @RequestParam(value = "specialistId") String specialistId,
                                    final RedirectAttributes redirectAttributes) {
-        String specialist = "specialist " + projectService.findUserById(specialistId).getUsername();
+        User specialistUser = projectService.findUserById(specialistId);
+        String specialist = "specialist " + specialistUser.getFirstName() + " " + specialistUser.getLastName();
 
         lastAction = buildLastAction("removeAttributeFail", new Object[]{specialist, entityType, projectService.findById(projectId).getName()});
         try {

@@ -37,11 +37,6 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public User findByUsername(String username) {
-        return userJpaRepository.findByUsername(username);
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userJpaRepository.findByEmail(email);
     }
@@ -91,28 +86,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException {
+    public void createInvitedUser(String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException {
         if (userJpaRepository.findByEmail(email) == null) {
             User user = new User();
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setPassword(password);
-            user.setState(UserState.INACTIVE.getState());
-            user.setUserProfileSet(userProfileSet);
-
-            save(user);
-        } else {
-            throw new EmailExistsException("There is an account with that email address: " + email);
-        }
-    }
-
-    @Override
-    public void createInvitedUser(String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException {
-        if (userJpaRepository.findByEmail(email) == null) {
-            User user = new User();
-            user.setUsername(username);
             user.setEmail(email);
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -127,9 +103,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(String userId, String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) {
+    public User newUserRegistration(String email, String firstName, String lastName, String password) throws EmailExistsException {
+        if (userJpaRepository.findByEmail(email) == null) {
+            User user = new User();
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+            user.setState(UserState.INVITED.getState());
+            user.setUserProfileSet(userProfileService.getSelfRegistrationUserProfileSet());
+
+            return userJpaRepository.saveAndFlush(user);
+
+        } else {
+            throw new EmailExistsException("There is already an account with this email address: " + email);
+        }
+    }
+
+    @Override
+    public void createUser(String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException {
+        if (userJpaRepository.findByEmail(email) == null) {
+            User user = new User();
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPassword(password);
+            user.setState(UserState.INACTIVE.getState());
+            user.setUserProfileSet(userProfileSet);
+
+            save(user);
+        } else {
+            throw new EmailExistsException("There is already an account with this email address: " + email);
+        }
+    }
+
+    @Override
+    public void updateUser(String userId, String email, String firstName, String lastName, Set<UserProfile> userProfileSet) {
         User user = findById(userId);
-        user.setUsername(username);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUserProfileSet(userProfileSet);
+
+        save(user);
+    }
+
+    @Override
+    public void updateUser(String userId, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) {
+        User user = findById(userId);
         user.setEmail(email);
         user.setPassword(password);
         user.setFirstName(firstName);
@@ -171,7 +192,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User pojo) {
-        logger.info("Saved user with username: " + pojo.getUsername());
+        logger.info("Saved user with email: " + pojo.getEmail());
         pojo.setPassword(bCryptPasswordEncoder.encode(pojo.getPassword()));
         userJpaRepository.save(pojo);
     }
@@ -185,7 +206,7 @@ public class UserServiceImpl implements UserService {
             verificationTokenService.delete(verificationToken);
         }
 
-        logger.info("Removed user with username: " + user.getUsername());
+        logger.info("Removed user with email: " + user.getEmail());
         userJpaRepository.delete(user);
     }
 

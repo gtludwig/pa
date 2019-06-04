@@ -9,13 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Service(value = "verificationTokenServiceImpl")
+@Service(value = "verificationTokenService")
 public class VerificationTokenServiceImpl implements VerificationTokenService {
 
     private static Logger logger = LoggerFactory.getLogger(VerificationTokenServiceImpl.class);
+
+    private static final int EXPIRATION = 60 * 24;
 
     @Autowired
     private VerificationTokenJpaRepository verificationTokenJpaRepository;
@@ -31,9 +35,22 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     @Override
+    public VerificationToken createVerificationTokenForNewRegisteredUser(User user) {
+        VerificationToken verificationToken = new VerificationToken(UUID.randomUUID().toString(), user);
+        return verificationTokenJpaRepository.saveAndFlush(verificationToken);
+    }
+
+    @Override
     public void createVerificationTokenForUser(User user, String token) {
-        final VerificationToken myToken = new VerificationToken(token, user);
-        save(myToken);
+        VerificationToken myToken = new VerificationToken(token, user, calculateExpiryDate(EXPIRATION));
+        myToken = verificationTokenJpaRepository.saveAndFlush(myToken);
+//        save(myToken);
+    }
+
+    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
+        return new Date(calendar.getTime().getTime());
     }
 
     @Override

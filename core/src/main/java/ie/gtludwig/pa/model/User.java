@@ -7,7 +7,6 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -16,9 +15,9 @@ public class User extends BasePojo {
 
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
+//    @NotEmpty
+//    @Column(name = "username", unique = true, nullable = false)
+//    private String username;
 
     @NotEmpty
     @Column(name = "email", unique = true, nullable = false)
@@ -54,19 +53,19 @@ public class User extends BasePojo {
             inverseJoinColumns = @JoinColumn(name = "userProfileId"))
     private Set<UserProfile> userProfileSet;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "pa_users_roles",
-            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
-    private Collection<Role> roles;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "pa_users_roles",
+//            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
+//    private Collection<Role> roles;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public String getUsername() {
+//        return username;
+//    }
+//
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public String getEmail() {
         return email;
@@ -132,11 +131,11 @@ public class User extends BasePojo {
         this.userProfileSet = userProfileSet;
     }
 
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
+//    public Collection<Role> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(Collection<Role> roles) {
+//        this.roles = roles;
+//    }
 }

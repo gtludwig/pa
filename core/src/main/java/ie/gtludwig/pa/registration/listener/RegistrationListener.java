@@ -33,7 +33,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent onRegistrationCompleteEvent) {
-
+        this.confirmRegistration(onRegistrationCompleteEvent);
     }
 
     private void confirmRegistration(final OnRegistrationCompleteEvent onRegistrationCompleteEvent) {
@@ -48,7 +48,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private final SimpleMailMessage constructEmailMessage(final OnRegistrationCompleteEvent onRegistrationCompleteEvent, final User user, final String token) {
         final String recipientAddress = user.getEmail();
         final String subject = "Registration confirmation";
-        final String confirmationUrl = onRegistrationCompleteEvent.getAppUrl() + "/registrationConfirm?token=" + token;
+        final String confirmationUrl = onRegistrationCompleteEvent.getAppUrl() + "/admin/user/registration/confirm?token=" + token;
         final String message = messageSource.getMessage("mail.registrationConfirmation", null, onRegistrationCompleteEvent.getLocale());
         final SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);

@@ -87,18 +87,4 @@ public class AxisPojo extends BasePojo {
     public void setProject(Project project) {
         this.project = project;
     }
-
-    @Override
-    public String toString() {
-        return "AxisPojo{" +
-                "id='" + id + '\'' +
-                ", ordering=" + ordering +
-                ", description='" + description + '\'' +
-                ", applicationDefault=" + applicationDefault +
-                ", guideline=" + guideline +
-                ", numberOfRules=" + numberOfRules +
-                ", ruleSet=" + ruleSet +
-                ", project=" + project +
-                '}';
-    }
 }

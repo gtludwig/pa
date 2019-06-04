@@ -23,9 +23,11 @@ public class UserPojo {
 
     private String lastName;
 
-    private String state = UserState.ACTIVE.getState();
+    private String state = UserState.INACTIVE.getState();
 
     private Set<UserProfile> userProfileSet;
+
+    private boolean accountOwner;
 
     public String getId() {
         return id;
@@ -97,5 +99,13 @@ public class UserPojo {
 
     public void setUserProfileSet(Set<UserProfile> userProfileSet) {
         this.userProfileSet = userProfileSet;
+    }
+
+    public boolean isAccountOwner() {
+        return accountOwner;
+    }
+
+    public void setAccountOwner(boolean accountOwner) {
+        this.accountOwner = accountOwner;
     }
 }

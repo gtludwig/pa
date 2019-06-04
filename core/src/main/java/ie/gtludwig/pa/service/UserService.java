@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface UserService extends CrudService<User> {
 
-    User findByUsername(String username);
+//    User findByUsername(String username);
 
     User findByEmail(String email);
 
@@ -27,11 +27,15 @@ public interface UserService extends CrudService<User> {
     // TODO - refactor this
     List<User> findAllByUserProfileType(UserProfileType userProfileType);
 
-    void createUser(String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException;
+    User newUserRegistration(String email, String firstName, String lastName, String password) throws EmailExistsException;
 
-    void createInvitedUser(String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException;
+    void createUser(String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException;
 
-    void updateUser(String userId, String username, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet);
+    void createInvitedUser(String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet) throws EmailExistsException;
+
+    void updateUser(String userId, String email, String firstName, String lastName, Set<UserProfile> userProfileSet);
+
+    void updateUser(String userId, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet);
 
     VerificationToken getVerificationToken(String verificationToken);
 

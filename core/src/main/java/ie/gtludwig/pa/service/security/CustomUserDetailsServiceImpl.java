@@ -30,23 +30,36 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userService.findByEmail(email);
-        if (user == null) {
-            logger.error("User with email" + email + " not found.");
-            throw new UsernameNotFoundException("Oops! User not found with email: " + email);
-        } else {
 
-            boolean enabled = true;
-            boolean accountNonExpired = true;
-            boolean credentialsNonExpired = true;
-            boolean accountNonLocked = true;
-            Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-            for (UserProfile userProfile : user.getUserProfileSet()) {
-                grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
+        try {
+            User user = userService.findByEmail(email);
+            if (user == null) {
+                logger.error("User with email" + email + " not found.");
+                throw new UsernameNotFoundException("Oops! User not found with email: " + email);
+            } else {
+
+                boolean enabled = true;
+                boolean accountNonExpired = true;
+                boolean credentialsNonExpired = true;
+                boolean accountNonLocked = true;
+
+                Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+                for (UserProfile userProfile : user.getUserProfileSet()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
+                }
+                logger.info("User with email {} successfully logged", user.getEmail());
+                return new org.springframework.security.core.userdetails.User(
+                        user.getEmail(),
+                        user.getPassword(),
+                        enabled,
+                        accountNonExpired,
+                        credentialsNonExpired,
+                        accountNonLocked,
+                        grantedAuthorities);
             }
-            logger.info("User with email {} successfully logged", user.getEmail());
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), enabled, accountNonExpired,
-                    credentialsNonExpired, accountNonLocked, grantedAuthorities);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

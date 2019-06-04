@@ -10,6 +10,8 @@ public interface VerificationTokenService extends CrudService<VerificationToken>
 
     VerificationToken findByUser(User user);
 
+    VerificationToken createVerificationTokenForNewRegisteredUser(User user);
+
     void createVerificationTokenForUser(User user, String token);
 
     void delete(VerificationToken verificationToken);
