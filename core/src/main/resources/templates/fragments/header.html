@@ -25,10 +25,10 @@
         <ul class="navbar-nav px-3">
 
             <li class="nav-item text-nowrap" sec:authorize="isAuthenticated()">
-                <a th:href="@{/logout}" onclick="$('#form').submit();">
+                <a onclick="$('#logoutForm').submit();" th:href="@{/logout}">
                     <span class="fa fa-sign-out" aria-hidden="true" th:title="#{gen.logout}"/>
                 </a>
-                <form id="form" method="post" action="#" th:action="@{/logout}"></form>
+                <form action="#" id="logoutForm" method="post" th:action="@{/logout}"></form>
             </li>
         </ul>
     </nav>

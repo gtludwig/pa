@@ -2,16 +2,13 @@ package ie.gtludwig.pa.controller.dto;
 
 import ie.gtludwig.pa.model.UserProfile;
 import ie.gtludwig.pa.model.UserState;
-import ie.gtludwig.pa.validation.PasswordMatches;
 
 import java.util.Set;
 
-@PasswordMatches
+//@PasswordMatches
 public class UserPojo {
 
     private String id;
-
-    private String username;
 
     private String email;
 
@@ -29,20 +26,14 @@ public class UserPojo {
 
     private boolean accountOwner;
 
+    private boolean enabled;
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -107,5 +98,13 @@ public class UserPojo {
 
     public void setAccountOwner(boolean accountOwner) {
         this.accountOwner = accountOwner;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

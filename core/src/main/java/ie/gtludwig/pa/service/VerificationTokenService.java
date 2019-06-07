@@ -16,6 +16,8 @@ public interface VerificationTokenService extends CrudService<VerificationToken>
 
     void delete(VerificationToken verificationToken);
 
+    void deleteVerificationTokenByUser(User user);
+
     VerificationToken generateNewVerificationToken(final String existingVerificationToken);
 
 }

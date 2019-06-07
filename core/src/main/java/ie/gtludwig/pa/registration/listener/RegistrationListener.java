@@ -2,13 +2,10 @@ package ie.gtludwig.pa.registration.listener;
 
 import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.registration.OnRegistrationCompleteEvent;
+import ie.gtludwig.pa.service.MailService;
 import ie.gtludwig.pa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -20,16 +17,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private UserService userService;
 
     @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private JavaMailSender javaMailSender;
-
-    @Autowired
-    private Environment environment;
+    private MailService mailService;
 
     // API
-
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent onRegistrationCompleteEvent) {
@@ -41,20 +31,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         final String token = UUID.randomUUID().toString();
         userService.createVerificationTokenForUser(user, token);
 
-        final SimpleMailMessage email = constructEmailMessage(onRegistrationCompleteEvent, user, token);
-        javaMailSender.send(email);
-    }
 
-    private final SimpleMailMessage constructEmailMessage(final OnRegistrationCompleteEvent onRegistrationCompleteEvent, final User user, final String token) {
-        final String recipientAddress = user.getEmail();
-        final String subject = "Registration confirmation";
-        final String confirmationUrl = onRegistrationCompleteEvent.getAppUrl() + "/admin/user/registration/confirm?token=" + token;
-        final String message = messageSource.getMessage("mail.registrationConfirmation", null, onRegistrationCompleteEvent.getLocale());
-        final SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText(message + " \r\n" + confirmationUrl);
-        email.setFrom(environment.getProperty("support.email"));
-        return email;
+//        mailService.sendNewUserRegistrationToken(onRegistrationCompleteEvent, user, token);
+
+        //TODO fix this!
+        mailService.sendNewUserRegistrationToken_HTML(onRegistrationCompleteEvent, user, token);
     }
 }

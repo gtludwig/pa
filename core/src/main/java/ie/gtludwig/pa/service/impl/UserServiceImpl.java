@@ -3,6 +3,7 @@ package ie.gtludwig.pa.service.impl;
 
 import ie.gtludwig.pa.dao.UserJpaRepository;
 import ie.gtludwig.pa.model.*;
+import ie.gtludwig.pa.service.PasswordResetTokenService;
 import ie.gtludwig.pa.service.UserProfileService;
 import ie.gtludwig.pa.service.UserService;
 import ie.gtludwig.pa.service.VerificationTokenService;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private VerificationTokenService verificationTokenService;
+
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -140,12 +144,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(String userId, String email, String firstName, String lastName, Set<UserProfile> userProfileSet) {
         User user = findById(userId);
-        user.setEmail(email);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setUserProfileSet(userProfileSet);
+        if (user != null) {
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setUserProfileSet(userProfileSet);
 
-        save(user);
+            try {
+                save(user);
+            } catch (Exception e) {
+                logger.error(e.getLocalizedMessage());
+            }
+        }
     }
 
     @Override
@@ -161,8 +171,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePasswordForUser(String email, String password) {
+        User user = findByEmail(email);
+        updateUser(user.getId(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getUserProfileSet());
+        if (passwordResetTokenService.findByUser(user) != null) {
+            deletePasswordResetTokenByUser(user);
+        }
+    }
+
+    @Override
     public VerificationToken getVerificationToken(String token) {
         return verificationTokenService.findByToken(token);
+    }
+
+    @Override
+    public PasswordResetToken getPasswordResetToken(String passwordResetToken) {
+        return passwordResetTokenService.findByToken(passwordResetToken);
     }
 
     @Override
@@ -171,8 +195,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void createPasswordResetToken(User user, String token) {
+        passwordResetTokenService.createPasswordResetTokenForUser(user, token);
+    }
+
+    @Override
     public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
         return verificationTokenService.generateNewVerificationToken(existingVerificationToken);
+    }
+
+    @Override
+    public void deleteVerificationTokenByUser(User user) {
+        verificationTokenService.deleteVerificationTokenByUser(user);
+    }
+
+    @Override
+    public void deletePasswordResetTokenByUser(User user) {
+        passwordResetTokenService.deletePasswordResetTokenByUser(user);
     }
 
     @Override
@@ -201,9 +240,14 @@ public class UserServiceImpl implements UserService {
     public void remove(String id) {
         User user = userJpaRepository.getOne(id);
         final VerificationToken verificationToken = verificationTokenService.findByUser(user);
+        final PasswordResetToken passwordResetToken = passwordResetTokenService.findByUser(user);
 
         if (verificationToken != null) {
             verificationTokenService.delete(verificationToken);
+        }
+
+        if (passwordResetToken != null) {
+            passwordResetTokenService.delete(passwordResetToken);
         }
 
         logger.info("Removed user with email: " + user.getEmail());

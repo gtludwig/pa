@@ -58,12 +58,8 @@
                             </div>
 
                             <div class="form-group row">
-                                <!--                                <div class="col-lg-6">-->
-                                <!--                                    <label th:for="username" th:text="#{user.username}" />-->
-                                <!--                                    <input type="text" class="form-control" id="username" th:field="*{username}">-->
-                                <!--                                </div>-->
 
-                                <div class="col-lg-6">
+                                <div class="col-md-12 col-lg-12 col-xl-12">
                                     <label th:for="email" th:text="#{user.email}" />
                                     <input type="text" class="form-control" id="email" th:field="*{email}">
                                 </div>
@@ -81,18 +77,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-lg-6">
-                                    <label th:for="password" th:text="#{user.password}" />
-                                    <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <label th:for="passwordConfirm" th:text="#{user.passwordConfirm}" />
-                                    <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
-                                </div>
-                            </div>
-
                             <div class="form-group row justify-content-md-center justify-content-lg-center justify-content-xl-center">
                                 <div class="col-md-12 col-lg-12 col-xl-12">
                                     <label th:for="profiles" th:text="#{user.profiles}" />
@@ -105,8 +89,6 @@
                                     </select>
                                 </div>
                             </div>
-
-
 
                             <div id="controls">
                                 <button id="submitButton" type="submit" class="btn btn-success btn-pill" th:text="#{gen.submit}">Submit</button>

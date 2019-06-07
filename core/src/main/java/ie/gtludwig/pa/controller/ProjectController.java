@@ -3,11 +3,13 @@ package ie.gtludwig.pa.controller;
 import ie.gtludwig.pa.controller.dto.ProjectPojo;
 import ie.gtludwig.pa.model.Project;
 import ie.gtludwig.pa.model.User;
+import ie.gtludwig.pa.registration.OnInvitationCompleteEvent;
 import ie.gtludwig.pa.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -37,6 +40,9 @@ public class ProjectController {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     private String entityType = "project";
 
@@ -185,7 +191,10 @@ public class ProjectController {
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/addSpecialists", method = RequestMethod.POST)
-    public String addSpecialist(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") Project project, Errors errors, final RedirectAttributes redirectAttributes) {
+    public String addSpecialist(ModelMap modelMap,
+                                @Valid @ModelAttribute(value = "pojo") Project project,
+                                Errors errors,
+                                final RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
@@ -208,7 +217,11 @@ public class ProjectController {
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/inviteSpecialist", method = RequestMethod.POST)
-    public String inviteSpecialist(ModelMap modelMap, @Valid @ModelAttribute(value = "pojo") ProjectPojo pojo, Errors errors, final RedirectAttributes redirectAttributes) {
+    public String inviteSpecialist(ModelMap modelMap,
+                                   @Valid @ModelAttribute(value = "pojo") ProjectPojo pojo,
+                                   Errors errors,
+                                   HttpServletRequest request,
+                                   final RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
                 logger.error(error.getObjectName());
@@ -219,6 +232,8 @@ public class ProjectController {
         lastAction = buildLastAction("editAttributeFail", new Object[]{"invited specialists", entityType, pojo.getName()});
         try {
             projectService.inviteSpecialistToProject(pojo.getInviteeEmail(), pojo.getId());
+            User specialist = projectService.findUserByEmail(pojo.getInviteeEmail());
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(specialist, Locale.US, getAppUrl(request)));
             lastAction = buildLastAction("editAttributeSuccess", new Object[]{"specialists list", entityType, pojo.getName()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
@@ -276,5 +291,11 @@ public class ProjectController {
         pojo.setSpecialists(project.getSpecialists());
 
         return pojo;
+    }
+
+    // ============== NON-API ============
+
+    private String getAppUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }

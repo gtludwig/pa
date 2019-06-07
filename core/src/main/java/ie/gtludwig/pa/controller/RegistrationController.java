@@ -2,13 +2,14 @@ package ie.gtludwig.pa.controller;
 
 import ie.gtludwig.pa.config.UserValidator;
 import ie.gtludwig.pa.controller.dto.UserPojo;
+import ie.gtludwig.pa.model.PasswordResetToken;
 import ie.gtludwig.pa.model.User;
 import ie.gtludwig.pa.model.UserState;
 import ie.gtludwig.pa.model.VerificationToken;
+import ie.gtludwig.pa.registration.OnPasswordResetCompleteEvent;
 import ie.gtludwig.pa.registration.OnRegistrationCompleteEvent;
 import ie.gtludwig.pa.service.SecurityService;
 import ie.gtludwig.pa.service.UserService;
-import ie.gtludwig.pa.util.GenericResponse;
 import ie.gtludwig.pa.validation.EmailExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,11 +29,15 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -42,24 +46,34 @@ import java.util.Locale;
 public class RegistrationController {
 
     private static Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private SecurityService securityService;
+
     @Autowired
     private UserValidator userValidator;
+
     @Autowired
     private MessageSource messageSource;
+
     @Autowired
     private ApplicationContext context;
+
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-    @Autowired
-    private JavaMailSender javaMailSender;
+
+//    @Autowired
+//    private JavaMailSender javaMailSender;
+
     @Autowired
     private Environment environment;
+
     @Autowired
     private AuthenticationManager authenticationManager;
+
     private String entityType = "user";
 
     private String lastAction;
@@ -71,6 +85,42 @@ public class RegistrationController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public void registration(ModelMap modelMap) {
         modelMap.addAttribute("pojo", new UserPojo());
+    }
+
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "/registerInvited", method = RequestMethod.GET)
+    public String registerInvitedUser(ModelMap modelMap, @RequestParam(value = "token") String token) {
+        Locale locale = Locale.US;
+
+        VerificationToken verificationToken = userService.getVerificationToken(token);
+        if (verificationToken == null) {
+            String message = messageSource.getMessage("auth.message.invalidToken", null, locale);
+            modelMap.addAttribute("message", message);
+            modelMap.addAttribute("expired", true);
+            modelMap.addAttribute("token", token);
+            return "redirect:/badUser";
+        }
+        User user = verificationToken.getUser();
+        Calendar calendar = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
+            String message = messageSource.getMessage("auth.message.expired", null, locale);
+            modelMap.addAttribute("message", message);
+            return "redirect:/badUser";
+        }
+
+        UserPojo pojo = new UserPojo();
+        pojo.setId(user.getId());
+        pojo.setEmail(user.getEmail());
+        pojo.setFirstName(null);
+        pojo.setLastName(null);
+        pojo.setState(UserState.INVITED.getState());
+        pojo.setUserProfileSet(user.getUserProfileSet());
+        pojo.setEnabled(user.isEnabled());
+
+        modelMap.addAttribute("pojo", pojo);
+
+        return "/admin/user/registration/registerInvited";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -94,7 +144,7 @@ public class RegistrationController {
         try {
             String appUrl = getAppUrl(request);
             User user = userService.newUserRegistration(pojo.getEmail(), pojo.getFirstName(), pojo.getLastName(), pojo.getPassword());
-            lastAction = buildLastAction("createSuccess", new Object[]{entityType, pojo.getUsername()});
+            lastAction = buildLastAction("createSuccess", new Object[]{entityType, pojo.getEmail()});
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, Locale.US, appUrl));
 
         } catch (EmailExistsException eee) {
@@ -109,10 +159,10 @@ public class RegistrationController {
         return "login";
     }
 
+    @SuppressWarnings("Duplicates")
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     public String confirmRegistration(ModelMap modelMap, @RequestParam(value = "token") String token) {
         Locale locale = Locale.US;
-
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
@@ -137,21 +187,103 @@ public class RegistrationController {
         return "login";
     }
 
-    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
-    @ResponseBody
-    public GenericResponse resendRegistrationToken(HttpServletRequest httpServletRequest, @RequestParam(value = "token") String existingToken) {
-        VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
+//    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
+//    @ResponseBody
+//    public GenericResponse resendRegistrationToken(HttpServletRequest httpServletRequest, @RequestParam(value = "token") String existingToken) {
+//        VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
+//
+//        User user = userService.getUser(newToken.getToken());
+//        String appUrl =
+//                "http://" + httpServletRequest.getServerName() +
+//                        ":" + httpServletRequest.getServerPort() +
+//                        httpServletRequest.getContextPath();
+//        SimpleMailMessage email =
+//                constructResendVerificationTokenEmail(appUrl, httpServletRequest.getLocale(), newToken, user);
+//        javaMailSender.send(email);
+//
+//        return new GenericResponse(messageSource.getMessage("message.resendToken", null, httpServletRequest.getLocale()));
+//    }
 
-        User user = userService.getUser(newToken.getToken());
-        String appUrl =
-                "http://" + httpServletRequest.getServerName() +
-                        ":" + httpServletRequest.getServerPort() +
-                        httpServletRequest.getContextPath();
-        SimpleMailMessage email =
-                constructResendVerificationTokenEmail(appUrl, httpServletRequest.getLocale(), newToken, user);
-        javaMailSender.send(email);
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
+    public void forgotPassword(ModelMap modelMap) {
+        modelMap.addAttribute("pojo", new UserPojo());
+    }
 
-        return new GenericResponse(messageSource.getMessage("message.resendToken", null, httpServletRequest.getLocale()));
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
+    public String forgotPassword(ModelMap modelMap,
+                                 @Valid @ModelAttribute(value = "pojo") UserPojo pojo,
+                                 HttpServletRequest request,
+                                 Errors errors,
+                                 final RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            return "/admin/user/register/forgotPassword";
+        }
+
+        lastAction = buildLastAction("resetFail", new Object[]{"password", entityType, pojo.getEmail(), errors.getAllErrors().toString()});
+        try {
+            String appUrl = getAppUrl(request);
+            User user = userService.findByEmail(pojo.getEmail());
+            eventPublisher.publishEvent(new OnPasswordResetCompleteEvent(user, Locale.US, appUrl));
+            lastAction = buildLastAction("resetSuccess", new Object[]{"password", entityType, pojo.getEmail(), errors.getAllErrors().toString()});
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            logger.error(e.toString());
+        }
+        logger.info(lastAction);
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "login";
+    }
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
+    public String resetPassword(ModelMap modelMap, @RequestParam(value = "token") String token) {
+        Locale locale = Locale.US;
+
+        PasswordResetToken passwordResetToken = userService.getPasswordResetToken(token);
+        Calendar calendar = Calendar.getInstance();
+        if ((passwordResetToken.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
+            String message = messageSource.getMessage("auth.message.passwordTokenExpired", null, locale);
+            modelMap.addAttribute("message", message);
+            return "login";
+        } else {
+            return "redirect:updatePassword?userId=" + passwordResetToken.getUser().getId();
+        }
+    }
+
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.GET)
+    public void updatePassword(ModelMap modelMap, @RequestParam(value = "userId") String userId) {
+        modelMap.addAttribute("pojo", userService.findById(userId));
+    }
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+    public String updatePassword(ModelMap modelMap,
+                                 @ModelAttribute(value = "pojo") User pojo,
+                                 HttpServletRequest request,
+                                 Errors errors,
+                                 final RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            for (ObjectError error : errors.getAllErrors()) {
+                logger.error(error.getObjectName());
+            }
+            return "/admin/user/register/forgotPassword";
+        }
+
+        lastAction = buildLastAction("updateFail", new Object[]{"password", entityType, pojo.getEmail(), errors.getAllErrors().toString()});
+        try {
+            userService.updatePasswordForUser(pojo.getEmail(), pojo.getPassword());
+
+            lastAction = buildLastAction("updateSuccess", new Object[]{"password", entityType, pojo.getEmail(), errors.getAllErrors().toString()});
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            logger.error(e.toString());
+        }
+        logger.info(lastAction);
+        redirectAttributes.addFlashAttribute("lastAction", lastAction);
+        return "login";
     }
 
 

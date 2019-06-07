@@ -132,14 +132,13 @@ public class AxisController {
         }
 
         lastAction = buildLastAction("editFail", new Object[] {entityType, pojo.getDescription()});
-
         try {
             if (pojo.getProject() == null) {
                 axisService.updateAxis(pojo.getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
-                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+//                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
             } else {
                 axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
-                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
+//                axisService.updateAxis(pojo.getId(), pojo.getProject().getId(), pojo.getDescription(), pojo.isApplicationDefault(), pojo.isGuideline(), pojo.getNumberOfRules());
             }
             lastAction = buildLastAction("editSuccess", new Object[]{entityType, pojo.getDescription()});
         } catch (Exception e) {

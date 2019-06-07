@@ -94,11 +94,10 @@ public class AdminController {
 
         entityType = "user";
 
-        lastAction = buildLastAction("createFail", new Object[] {entityType, pojo.getUsername()});
+        lastAction = buildLastAction("createFail", new Object[]{entityType, pojo.getEmail()});
         try {
             userService.createUser(pojo.getEmail(), pojo.getPassword(), pojo.getFirstName(), pojo.getLastName(), pojo.getUserProfileSet());
-//            userService.createUser(pojo.getUsername(), pojo.getEmail(), pojo.getPassword(), pojo.getFirstName(), pojo.getLastName(), pojo.getUserProfileSet());
-            lastAction = buildLastAction("createSuccess", new Object[]{entityType, pojo.getUsername()});
+            lastAction = buildLastAction("createSuccess", new Object[]{entityType, pojo.getEmail()});
         } catch (EmailExistsException eee) {
             logger.error(eee.getLocalizedMessage());
             logger.error(eee.toString());
@@ -129,14 +128,14 @@ public class AdminController {
         }
         entityType = "user";
 
-        lastAction = buildLastAction("editFail", new Object[] {entityType, pojo.getUsername()});
+        lastAction = buildLastAction("editFail", new Object[]{entityType, pojo.getEmail()});
         try {
             if (!pojo.isAccountOwner() || pojo.getPassword().isEmpty()) {
                 userService.updateUser(pojo.getId(), pojo.getEmail(), pojo.getFirstName(), pojo.getLastName(), pojo.getUserProfileSet());
             } else {
                 userService.updateUser(pojo.getId(), pojo.getEmail(), pojo.getPassword(), pojo.getFirstName(), pojo.getLastName(), pojo.getUserProfileSet());
             }
-            lastAction = buildLastAction("editSuccess", new Object[] {entityType, pojo.getUsername()});
+            lastAction = buildLastAction("editSuccess", new Object[]{entityType, pojo.getEmail()});
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(e.toString());

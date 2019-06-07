@@ -1,9 +1,6 @@
 package ie.gtludwig.pa.service;
 
-import ie.gtludwig.pa.model.User;
-import ie.gtludwig.pa.model.UserProfile;
-import ie.gtludwig.pa.model.UserProfileType;
-import ie.gtludwig.pa.model.VerificationToken;
+import ie.gtludwig.pa.model.*;
 import ie.gtludwig.pa.service.generic.CrudService;
 import ie.gtludwig.pa.validation.EmailExistsException;
 
@@ -37,9 +34,19 @@ public interface UserService extends CrudService<User> {
 
     void updateUser(String userId, String email, String password, String firstName, String lastName, Set<UserProfile> userProfileSet);
 
+    void updatePasswordForUser(String email, String password);
+
     VerificationToken getVerificationToken(String verificationToken);
 
+    PasswordResetToken getPasswordResetToken(String passwordResetToken);
+
     void createVerificationTokenForUser(User user, String token);
+
+    void createPasswordResetToken(User user, String token);
+
+    void deleteVerificationTokenByUser(User user);
+
+    void deletePasswordResetTokenByUser(User user);
 
     VerificationToken generateNewVerificationToken(final String existingVerificationToken);
 

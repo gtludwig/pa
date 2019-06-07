@@ -5,6 +5,7 @@ import ie.gtludwig.pa.model.*;
 import ie.gtludwig.pa.service.AxisService;
 import ie.gtludwig.pa.service.ProjectService;
 import ie.gtludwig.pa.service.UserService;
+import ie.gtludwig.pa.validation.EmailExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service(value = "projectService")
@@ -189,20 +191,21 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void inviteSpecialistToProject(String email, String projectId) {
-        System.out.println("projectId: " + projectId + " | " + email);
-//        try {
-//
-//            userService.createUser("specialist", email, "abc1234", "Invited", "Specialist", userService.getInvitedSpecialistUserProfileSet());
-//        } catch (EmailExistsException e) {
-//            logger.error(e.getLocalizedMessage());
-//        }
-//        User specialist = userService.findByEmail(email);
-//
-//        Project project = findById(projectId);
-//
-//        project.getSpecialists().add(specialist);
-//
-//        save(project);
+        try {
+
+            userService.createUser(email, "abc1234", "Invited", "Specialist", userService.getInvitedSpecialistUserProfileSet());
+        } catch (EmailExistsException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+        User specialist = userService.findByEmail(email);
+        final String token = UUID.randomUUID().toString();
+        userService.createVerificationTokenForUser(specialist, token);
+
+        Project project = findById(projectId);
+
+        project.getSpecialists().add(specialist);
+
+        save(project);
     }
 
     @Override

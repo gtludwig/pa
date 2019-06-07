@@ -22,6 +22,14 @@ public class PasswordResetToken extends BasePojo {
 
     private Date expiryDate;
 
+    public PasswordResetToken() {
+    }
+
+    public PasswordResetToken(String token, User user, Date expiryDate) {
+        this.token = token;
+        this.user = user;
+        this.expiryDate = expiryDate;
+    }
 
     private Date calculateExpiryDate(final int expiryTimeInMinutes) {
         final Calendar cal = Calendar.getInstance();

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments/login}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $(":password").keyup(function () {
+            if ($("#password").val() != $("#passwordConfirm").val()) {
+                $("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+            } else {
+                $("#globalError").html("").hide();
+            }
+        });
+
+        options = {
+            common: {minChar: 8},
+            ui: {
+                showVerdictsInsideProgressBar: true,
+                showErrors: true,
+                errorMessages: {
+                    wordLength: /*[[#{error.wordLength}]]*/,
+                    wordNotEmail: /*[[#{error.wordNotEmail}]]*/,
+                    wordSequences: /*[[#{error.wordSequences}]]*/,
+                    wordLowercase: /*[[#{error.wordLowercase}]]*/,
+                    wordUppercase: /*[[#{error.wordUppercase}]]*/,
+                    wordOneNumber: /*[[#{error.wordOneNumber}]]*/,
+                    wordOneSpecialChar: /*[[#{error.wordOneSpecialChar}]]*/
+                }
+            }
+        };
+        $('#password').pwstrength(options);
+    });
+</script>
+<div class="container">
+    <div class="text-center">
+        <form class="form-signin" method="post" th:action="@{/admin/user/registration/registerInvited}"
+              th:object="${pojo}">
+            <div class="h3 mb-3 font-weight-normal">
+                <span th:text="#{user.registration}">form</span>
+            </div>
+
+            <div>
+                <label class="sr-only" th:text="#{user.email}"/>
+                <input class="form-control" required th:field="*{email}" th:placeholder="#{user.email}" type="email"/>
+                <span class="alert alert-danger col-sm-4" id="emailError" style="display:none"></span>
+            </div>
+
+            <div>
+                <label class="sr-only" th:text="#{user.firstName}">first</label>
+                <input class="form-control" name="firstName" required="required" th:placeholder="#{user.firstName}"
+                       value=""/>
+                <span class="alert alert-danger col-sm-4" id="firstNameError" style="display:none"></span>
+            </div>
+
+            <div>
+                <label class="sr-only" th:text="#{user.lastName}">first</label>
+                <input class="form-control" name="lastName" required="required" th:placeholder="#{user.lastName}"
+                       value=""/>
+                <span class="alert alert-danger col-sm-4" id="lastNameError" style="display:none"></span>
+            </div>
+
+            <div>
+                <label class="sr-only" th:text="#{user.password}">password</label>
+                <input class="form-control" id="password" th:field="*{password}" th:placeholder="#{user.password}"
+                       type="password"/>
+                <span class="alert alert-danger col-sm-4" id="passwordError" style="display:none"></span>
+            </div>
+            <div>
+                <label class="sr-only" th:text="#{user.passwordConfirm}">confirm</label>
+                <input class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}"
+                       th:placeholder="#{user.passwordConfirm}" type="password"/>
+                <span class="alert alert-danger col-sm-4" id="globalError" style="display:none"></span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" th:text="#{gen.submit}" type="submit">submit</button>
+            <!--            <a href="#" class="btn btn-lg btn-primary btn-block" onclick="register(event)" th:text="#{gen.submit}">submit</a>-->
+        </form>
+        <!--        <a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>-->
+    </div>
+</div>
+</body>
+</html>

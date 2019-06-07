@@ -59,6 +59,11 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     @Override
+    public void deleteVerificationTokenByUser(User user) {
+        delete(verificationTokenJpaRepository.findByUser(user));
+    }
+
+    @Override
     public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
         VerificationToken verificationToken = findByToken(existingVerificationToken);
         verificationToken.updateToken(UUID.randomUUID().toString());
